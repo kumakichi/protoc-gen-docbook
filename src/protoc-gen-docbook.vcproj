@@ -24,6 +24,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -82,6 +83,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).exe .\Test\"
 			/>
 		</Configuration>
 		<Configuration
@@ -154,6 +156,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).exe .\Test\"
 			/>
 		</Configuration>
 	</Configurations>
@@ -175,10 +178,6 @@
 			</File>
 			<File
 				RelativePath=".\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\property_parser.h"
 				>
 			</File>
 		</Filter>

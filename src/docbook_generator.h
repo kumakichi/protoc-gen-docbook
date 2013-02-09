@@ -39,7 +39,7 @@
 
 #include <string>
 #include <google/protobuf/compiler/code_generator.h>
-#include <sstream>
+#include <map>
 namespace google { namespace protobuf { namespace compiler {namespace docbook {
 
 	// CodeGenerator implementation which generates Java code.  If you create your
@@ -57,6 +57,8 @@ namespace google { namespace protobuf { namespace compiler {namespace docbook {
 			GeneratorContext* context,
 			string* error) const;
 
+	private:
+		std::map<std::string, std::string> _options;
 	private:
 		GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(DocbookGenerator);
 	};
