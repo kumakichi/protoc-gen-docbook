@@ -28,7 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: askldjd@gmail.com (Alan Ning)
+// Author: askldjd@gmail.com
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
@@ -38,10 +38,92 @@
 #include <google/protobuf/descriptor.pb.h>
 #include <google/protobuf/stubs/strutil.h>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <map>
+
+//#include <Windows.h>
 
 namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
+	namespace utils {
+
+		std::string Trim(const std::string& str)
+		{
+			std::string s = str;
+			unsigned int p;
+			while ((p = s.length()) > 0 && (unsigned char)s[p-1] <= ' ')
+				s.resize(p-1);
+			while ((p = s.length()) > 0 && (unsigned char)s[0] <= ' ')
+				s.erase(0, 1);
+			return s;
+		}
+
+		//! @details
+		//! This method parses a Java like .properties file that is k=v pairs.
+		//!
+		//! @param[in] filePath
+		//! File path to the property file.
+		//!
+		//! @return
+		//! k/v pairs that represents the property file.
+		//!
+		//! @remark
+		//! Hate to reinvent the wheel here since there are about a million 
+		//! parser implementations out there. However, I hate to bring in Boost 
+		//! library just for something this trivial.
+		std::map <std::string, std::string> ParseProperty(std::string const &filePath)
+		{
+			std::map <std::string, std::string> options;
+			std::ifstream ifs(filePath.c_str(), std::ifstream::in);
+			if(ifs.is_open())
+			{
+				std::string line;
+				while(std::getline(ifs, line))
+				{
+					line = Trim(line);
+
+					// First non-space char that is '#' is a comment line.
+					if(line.empty() == false && line[0]=='#') 
+						continue;
+
+					int p = 0;
+					if ((p = (int)line.find('=')) > 0)
+					{
+						std::string k = Trim(line.substr(0, p));
+						std::string v = Trim(line.substr(p+1));
+						if (!k.empty() && !v.empty())
+							options[k] = v;
+					}
+				}
+			}
+
+			ifs.close();
+			return options;
+		}
+	}
+
 	namespace {
+
+		const char *OPTION_NAME_FIELD_NAME_COLUMN_WIDTH = "field_name_column_width";
+		const char *OPTION_NAME_FIELD_TYPE_COLUMN_WIDTH = "field_type_column_width";
+		const char *OPTION_NAME_FIELD_RULE_COLUMN_WIDTH = "field_rules_column_width";
+		const char *OPTION_NAME_FIELD_DESC_COLUMN_WIDTH = "field_desc_column_width";
+		const char *OPTION_NAME_COLUMN_HEADER_COLOR = "column_header_color";
+
+
+		const char *DEFAULT_OUTPUT_NAME = "docbook_out.xml";
+
+		const char *DEFAULT_INSERTION_POINT= "insertion_point";
+
+		const char *DEFAULT_FIELD_NAME_COLUMN_WIDTH = "4";
+		const char *DEFAULT_FIELD_TYPE_COLUMN_WIDTH = "3";
+		const char *DEFAULT_FIELD_RULES_COLUMN_WIDTH = "3";
+		const char *DEFAULT_FIELD_DESC_COLUMN_WIDTH = "8";
+		const char *DEFAULT_COLUMN_HEADER_COLOR = "8eb4e3";
+
+		//! Docbook header that wraps the document under the Article tag.
 		void WriteDocbookHeader(std::ostringstream &os)
 		{
 			os 
@@ -54,6 +136,7 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				<< std::endl;		
 		}
 
+		//! Docbook footer that closes the article tag
 		void WriteDocbookFooter(std::ostringstream &os)
 		{
 			os 
@@ -65,27 +148,82 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 			std::ostringstream &os, 
 			std::string const &xmlID, 
 			std::string const &title,
-			std::string const &description)
+			std::string const &description,
+			std::map<std::string,std::string> const &options)
 		{
+			std::map<std::string,std::string>::const_iterator itr;
+
 			os 
 				<< "<sect1>"
-				<< "<title>" << title << "</title>"
+				<< "<title> Message: " << title << "</title>"
 				<< "<para>" << description << "</para>"
 				<< "<informaltable frame=\"all\""
 				<< " xml:id=\"" << xmlID << "\">"
 				<< "<tgroup cols=\"4\">"
 				<< " <colspec colname=\"c1\" colnum=\"1\""
-				<< " colwidth=\"4*\" />"
+				<< " colwidth=\"";
+
+			itr = options.find(OPTION_NAME_FIELD_NAME_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_FIELD_NAME_COLUMN_WIDTH;
+
+			os
+				<< "*\" />"
 				<< "<colspec colname=\"c2\" colnum=\"2\""
-				<< " colwidth=\"3*\" />"
+				<< " colwidth=\"";
+
+			itr = options.find(OPTION_NAME_FIELD_TYPE_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_FIELD_TYPE_COLUMN_WIDTH;
+
+			os
+				<< "*\" />"
 				<< "<colspec colname=\"c3\" colnum=\"3\""
-				<< " colwidth=\"3*\" />"
+				<< " colwidth=\"";
+			
+			itr = options.find(OPTION_NAME_FIELD_RULE_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_FIELD_RULES_COLUMN_WIDTH;
+
+			os
+				<< "*\" />"
 				<< "<colspec colname=\"c4\" colnum=\"4\""
-				<< " colwidth=\"8*\" />"
+				<< " colwidth=\"";
+			
+			itr = options.find(OPTION_NAME_FIELD_DESC_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_FIELD_DESC_COLUMN_WIDTH;
+
+			os
+				<<"*\" />"
 				<< "<thead>"
 				<< "<row>"
-				<< "<?dbhtml bgcolor=\"#8eb4e3\" ?>"
-				<< "<?dbfo bgcolor=\"#8eb4e3\" ?>"
+				<< "<?dbhtml bgcolor=\"#";
+			
+			itr = options.find(OPTION_NAME_COLUMN_HEADER_COLOR);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_COLUMN_HEADER_COLOR;
+
+			os
+				<<"\" ?>"
+				<< "<?dbfo bgcolor=\"#";
+			itr = options.find(OPTION_NAME_COLUMN_HEADER_COLOR);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_COLUMN_HEADER_COLOR;
+			os
+				<<"\" ?>"
 				<< "<entry>Element</entry>"
 				<< "<entry>Type</entry>"
 				<< "<entry>Occurs</entry>"
@@ -95,7 +233,6 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				<< "<tbody>"
 				<< std::endl;
 		}
-
 		void WriteInformalTableFooter(std::ostringstream &os)
 		{
 			os 
@@ -133,8 +270,6 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				refName.end(),
 				'.', 
 				'_');
-
-
 			os 
 				<< "<emphasis role=\"underline\""
 				<< " xlink:href=\"" << "#" << refName << "\">"
@@ -147,10 +282,14 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		{
 			std::ostringstream templateOs;
 			WriteDocbookHeader(templateOs);
-			templateOs << "<!-- @@protoc_insertion_point(point) -->" << std::endl;
+			templateOs 
+				<< "<!-- @@protoc_insertion_point("
+				<<DEFAULT_INSERTION_POINT
+				<<") -->" 
+				<< std::endl;
 			WriteDocbookFooter(templateOs);
 
-			scoped_ptr<io::ZeroCopyOutputStream> output(context.Open("template2.xml"));
+			scoped_ptr<io::ZeroCopyOutputStream> output(context.Open(DEFAULT_OUTPUT_NAME));
 			io::Printer printer(output.get(), '$');
 			printer.PrintRaw(templateOs.str().c_str());
 		}
@@ -159,11 +298,11 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
 	DocbookGenerator::DocbookGenerator() 
 	{
+		_options = utils::ParseProperty("docbook.properties");
 	}
 	DocbookGenerator::~DocbookGenerator() 
 	{
 	}
-
 
 	template <typename DescriptorType>
 	static std::string GetDescriptorComment(const DescriptorType* descriptor) {
@@ -183,13 +322,15 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		GeneratorContext* context,
 		string* error) const 
 	{
+		//Sleep(5000);
+
 		std::ostringstream _docbookStream;
 		std::ostringstream os;
 
 		for (int i = 0; i < file->message_type_count(); i++) 
 		{
-			Descriptor const *descriptor = file->message_type(i);
-			string cleanName = descriptor->full_name();
+			Descriptor const *messageDescriptor = file->message_type(i);
+			string cleanName = messageDescriptor->full_name();
 
 			std::replace(
 				cleanName.begin(),
@@ -200,13 +341,14 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 			WriteInformalTableHeader(
 				_docbookStream,
 				cleanName, 
-				descriptor->name(),
-				GetDescriptorComment(descriptor));
+				messageDescriptor->name(),
+				GetDescriptorComment(messageDescriptor),
+				_options);
 
-			for (int i = 0; i < descriptor->field_count(); i++) {
+			for (int i = 0; i < messageDescriptor->field_count(); i++) {
 				std::string labelStr;
 
-				switch(descriptor->field(i)->label())
+				switch(messageDescriptor->field(i)->label())
 				{
 				case FieldDescriptor::LABEL_OPTIONAL:
 					labelStr = "optional";
@@ -221,23 +363,23 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
 				std::string typeName;
 
-				if(descriptor->field(i)->type() == FieldDescriptor::TYPE_MESSAGE)
+				if(messageDescriptor->field(i)->type() == FieldDescriptor::TYPE_MESSAGE)
 				{
 					typeName = MakeXLink(
-						descriptor->field(i)->message_type()->full_name(),
-						descriptor->field(i)->message_type()->name());
+						messageDescriptor->field(i)->message_type()->full_name(),
+						messageDescriptor->field(i)->message_type()->name());
 				}
 				else
 				{
-					typeName = descriptor->field(i)->type_name();
+					typeName = messageDescriptor->field(i)->type_name();
 				}
 
 				WriteInformalTableEntry(
 					_docbookStream, 
-					descriptor->field(i)->name(),
+					messageDescriptor->field(i)->name(),
 					typeName,
 					labelStr,
-					GetDescriptorComment(descriptor->field(i)));
+					GetDescriptorComment(messageDescriptor->field(i)));
 			}
 			WriteInformalTableFooter(_docbookStream);
 		}
@@ -271,7 +413,7 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		}
 
 		scoped_ptr<io::ZeroCopyOutputStream> output(
-			context->OpenForInsert("template2.xml","point"));
+			context->OpenForInsert(DEFAULT_OUTPUT_NAME, DEFAULT_INSERTION_POINT));
 		io::Printer printer(output.get(), '$');
 		printer.PrintRaw(_docbookStream.str().c_str());
 
@@ -283,9 +425,4 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		return true;
 	}
 
-
-
-}  // namespace docbook
-}  // namespace compiler
-}  // namespace protobuf
-}  // namespace google
+}}}}  // end namespace
