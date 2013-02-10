@@ -58,8 +58,6 @@ namespace google { namespace protobuf { namespace compiler {namespace docbook {
 			string* error) const;
 
 	private:
-		std::map<std::string, std::string> _options;
-	private:
 		GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(DocbookGenerator);
 	};
 
