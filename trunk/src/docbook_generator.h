@@ -1,9 +1,8 @@
-// Protocol Buffers - Google's data interchange format
-// Copyright 2008 Google Inc.  All rights reserved.
-// http://code.google.com/p/protobuf/
+// protoc-gen-docbook
+// http://code.google.com/p/protoc-gen-docbook/
 //
 // Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are
+//// modification, are permitted provided that the following conditions are
 // met:
 //
 //     * Redistributions of source code must retain the above copyright
@@ -27,12 +26,8 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-// Author: kenton@google.com (Kenton Varda)
-//  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
 //
-// Generates Java code for a given .proto file.
+// Author: askldjd@gmail.com
 
 #ifndef GOOGLE_PROTOBUF_COMPILER_DOCBOOK_GENERATOR_H__
 #define GOOGLE_PROTOBUF_COMPILER_DOCBOOK_GENERATOR_H__

@@ -1,6 +1,5 @@
-// Protocol Buffers - Google's data interchange format
-// Copyright 2008 Google Inc.  All rights reserved.
-// http://code.google.com/p/protobuf/
+// protoc-gen-docbook
+// http://code.google.com/p/protoc-gen-docbook/
 //
 // Redistribution and use in source and binary forms, with or without
 //// modification, are permitted provided that the following conditions are
@@ -27,10 +26,8 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+//
 // Author: askldjd@gmail.com
-//  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
 
 #include "docbook_generator.h"
 #include <google/protobuf/io/printer.h>
@@ -123,6 +120,19 @@ namespace {
 
 	char const *DEFAULT_INSERTION_POINT= "insertion_point";
 
+	char const *SCALAR_VALUE_TYPES_TABLE_XML_ID = "protobuf_scalar_value_types";
+
+	//! @details
+	//! Column width measurement
+	//!
+	//! From DocBook official documentation:
+	//! ColWidth specifies the desired width of the relevant column. 
+	//! It can be either a fixed measure using one of the CALS units 
+	//! (36pt, 10pc, etc.) or a proportional measure. Proportional measures 
+	//! have the form “number*”, meaning this column should be number times 
+	//! wider than a column with the measure “1*” (or just “*”). These two forms 
+	//! can be mixed, as in “3*+1pc”. 
+	//! See http://www.docbook.org/tdg/en/html/colspec.html
 	char const *DEFAULT_FIELD_NAME_COLUMN_WIDTH = "4";
 	char const *DEFAULT_FIELD_TYPE_COLUMN_WIDTH = "3";
 	char const *DEFAULT_FIELD_RULES_COLUMN_WIDTH = "3";
@@ -176,7 +186,8 @@ namespace {
 		size_t index = 0;
 		string paragraph  = "<para>";
 		paragraph += comment;
-		while (true) {
+		for(;;)
+		{
 			index = paragraph.find("\n\n", index);
 			if (index == string::npos)
 				break;
@@ -239,6 +250,18 @@ namespace {
 		os 
 			<< "<emphasis role=\"underline\""
 			<< " xlink:href=\"" << "#" << refName << "\">"
+			<< displayName<< "</emphasis>";
+
+		return os.str();
+	}
+
+	string MakeXLinkScalarTable(string const &displayName)
+	{
+		std::ostringstream os;
+
+		os 
+			<< "<emphasis role=\"underline\""
+			<< " xlink:href=\"" << "#" << SCALAR_VALUE_TYPES_TABLE_XML_ID << "\">"
 			<< displayName<< "</emphasis>";
 
 		return os.str();
@@ -538,12 +561,8 @@ namespace {
 		}
 		os 
 			<< "<row>"
-			<< "<?dbhtml bgcolor=\"#" 
-			<<cellcolor
-			<<"\" ?><?dbfo bgcolor=\"#"
-			<<cellcolor
-			<<"\" ?>"
-			<<std::endl
+			<< "<?dbhtml bgcolor=\"#" << cellcolor <<"\" ?>" << std::endl
+			<<"<?dbfo bgcolor=\"#" << cellcolor <<"\" ?>"<< std::endl
 			<< "\t<entry>" << fieldname << "</entry>" << std::endl
 			<< "\t<entry>" << type << "</entry>" << std::endl
 			<< "\t<entry>" << occurrence << "</entry>" << std::endl
@@ -572,12 +591,22 @@ namespace {
 		std::ostringstream &os, 
 		string const &fieldname,
 		int enumValue,
-		string const &comment)
+		string const &comment,
+		bool alternateColor)
 	{
 		string cleanComment = SanitizeCommentForXML(comment);
 		string paragraphComment = ParagraphFormatComment(cleanComment);
+
+		string cellcolor = s_rowColor;
+		if(alternateColor)
+		{
+			cellcolor = s_rowColorAlt;
+		}
+
 		os 
 			<< "<row>"<<std::endl
+			<< "<?dbhtml bgcolor=\"#" << cellcolor <<"\" ?>" << std::endl
+			<<"<?dbfo bgcolor=\"#" << cellcolor <<"\" ?>"<< std::endl
 			<< "\t<entry>" << fieldname << "</entry>" << std::endl
 			<< "\t<entry>" << enumValue << "</entry>" << std::endl
 			<< "\t<entry>" << paragraphComment << "</entry>" << std::endl
@@ -622,7 +651,7 @@ namespace {
 					fd->enum_type()->name());
 				break;
 			default:
-				typeName = fd->type_name();
+				typeName = MakeXLinkScalarTable(fd->type_name());
 				break;
 			}
 
@@ -642,12 +671,15 @@ namespace {
 		std::ostringstream &os, 
 		EnumDescriptor const *enumDescriptor)
 	{
-		for (int i = 0; i < enumDescriptor->value_count(); i++) {
+		for (int i = 0; i < enumDescriptor->value_count(); i++) 
+		{
+			bool alternateColor = (i%2 != 0);
 			WriteEnumInformalTableEntry(
 				os, 
 				enumDescriptor->value(i)->name(),
 				i,
-				GetDescriptorComment(enumDescriptor->value(i)));
+				GetDescriptorComment(enumDescriptor->value(i)),
+				alternateColor);
 		}
 	}
 
@@ -781,15 +813,184 @@ namespace {
 		}
 	}
 
+	void WriteProtoTypeTable(std::ostringstream &os)
+	{
+		const int NUM_TYPE = 15;
+		const int NUM_COLUMN = 4;
+		char* table[NUM_TYPE][NUM_COLUMN] = {
+			{
+				"double", 
+					"", 
+					"double", 
+					"double"
+			} 
+			, 
+			{
+				"float", 
+					"", 
+					"float", 
+					"float"
+			} 
+			, 	
+			{
+				"int32", 
+					"Uses variable-length encoding. Inefficient for encoding \
+					negative numbers - if your field is likely to have negative \
+					values, use sint32 instead.", 
+					"int32", 
+					"int"
+			} 
+			, 	
+			{
+				"int64", 
+					"Uses variable-length encoding. Inefficient for encoding \
+					negative numbers - if your field is likely to have negative \
+					values, use sint64 instead.", 
+					"int64", 
+					"long"
+			} 
+			, 	
+			{
+				"uint32", 
+					"Uses variable-length encoding.", 
+					"uint32", 
+					"int"
+			} 
+			, 	
+			{
+				"uint64", 
+					"	Uses variable-length encoding.", 
+					"uint64", 
+					"long"
+			} 
+			, 	
+			{
+				"sint32", 
+					"Uses variable-length encoding. Signed int value. These \
+					more efficiently encode negative numbers than regular int32s.", 
+					"int32", 
+					"int"
+			} 
+			, 	
+			{
+				"sint64", 
+					"Uses variable-length encoding. Signed int value. These more\
+					efficiently encode negative numbers than regular int64s.", 
+					"int64", 
+					"long"
+			} 
+			, 	
+			{
+				"fixed32", 
+					"Always four bytes. More efficient than uint32 if values are \
+					often greater than 2^28.", 
+					"uint32", 
+					"int"
+			} 
+			, 	
+			{
+				"fixed64", 
+					"Always eight bytes. More efficient than uint64 if values \
+					are often greater than 2^56.", 
+					"uint64", 
+					"long"
+			} 
+			, 	
+			{
+				"sfixed32", 
+					"Always four bytes..", 
+					"int32", 
+					"int"
+			} 
+			, 	
+			{
+				"sfixed64", 
+					"Always eight bytes.", 
+					"int64", 
+					"long"
+			} 
+			, 	
+			{
+				"bool", 
+					"", 
+					"bool", 
+					"boolean"
+			} 
+			, 	
+			{
+				"string", 
+					"	A string must always contain UTF-8 encoded or 7-bit ASCII text.", 
+					"string", 
+					"String"
+			} 
+			, 	
+			{
+				"bytes", 
+					"May contain any arbitrary sequence of bytes.", 
+					"string", 
+					"ByteString"
+			} 
+		};
+		os 
+			<< "<sect1>"
+			<< "<title>Scalar Value Types</title>" << std::endl
+			<< "<para> A scalar message field can have one of the following types - the table shows the type specified in the .proto file, and the corresponding type in the automatically generated class: </para>" << std::endl
+			<< "<informaltable frame=\"all\""
+			<< " xml:id=\"" << SCALAR_VALUE_TYPES_TABLE_XML_ID << "\">" << std::endl
+			<< "<tgroup cols=\"4\">" << std::endl
+			<< " <colspec colname=\"c1\" colnum=\"1\" colwidth=\"2*\"/>" << std::endl
+			<< " <colspec colname=\"c2\" colnum=\"2\" colwidth=\"6*\"/>" << std::endl
+			<< " <colspec colname=\"c3\" colnum=\"3\" colwidth=\"2*\"/>" << std::endl
+			<< " <colspec colname=\"c4\" colnum=\"4\" colwidth=\"2*\"/>" << std::endl
+			<< "<thead>" << std::endl
+			<< "<row>" << std::endl
+
+			<< "<?dbhtml bgcolor=\"#" <<s_columnHeaderColor << "\" ?>" << std::endl
+			<< "<?dbfo bgcolor=\"#" <<s_columnHeaderColor << "\" ?>" << std::endl
+
+			<< "<entry>Type</entry>" << std::endl
+			<< "<entry>Notes</entry>" << std::endl
+			<< "<entry>C++ Type</entry>" << std::endl
+			<< "<entry>Java Type</entry>" << std::endl
+
+			<< "</row>" << std::endl
+			<< "</thead>" << std::endl
+			
+			<< "<tbody>" << std::endl;
+
+
+		int i=0;
+		int j=0;
+		for(i=0; i<NUM_TYPE; ++i)
+		{
+			os
+				<< "<row>"
+				<< "<?dbhtml bgcolor=\"#" <<s_rowColor << "\" ?>" << std::endl
+				<< "<?dbfo bgcolor=\"#" <<s_rowColor << "\" ?>" << std::endl;
+			for(j=0; j<NUM_COLUMN; ++j)
+			{
+				os << "<entry>" << table[i][j] << "</entry>" << std::endl;
+			}
+			os<< "</row>" << std::endl;
+		}
+
+		os
+			<< "</tbody>" << std::endl
+			<< "</tgroup>" << std::endl
+			<< "</informaltable>" << std::endl
+			<< "</sect1>"<< std::endl;
+	}
+
 	void MakeTemplateFile(GeneratorContext &context)
 	{
 		std::ostringstream templateOs;
-		WriteDocbookHeader(templateOs);
+		WriteDocbookHeader(templateOs);		
 		templateOs 
 			<< "<!-- @@protoc_insertion_point("
 			<<DEFAULT_INSERTION_POINT
 			<<") -->" 
 			<< std::endl;
+		WriteProtoTypeTable(templateOs);
 		WriteDocbookFooter(templateOs);
 
 		scoped_ptr<io::ZeroCopyOutputStream> output(
@@ -837,7 +1038,7 @@ DocbookGenerator::~DocbookGenerator()
 }
 bool DocbookGenerator::Generate(
 	FileDescriptor const *file,
-	string const &parameter,
+	string const &/*parameter*/,
 	GeneratorContext *context,
 	string *error) const 
 {
@@ -852,6 +1053,8 @@ bool DocbookGenerator::Generate(
 	WriteEnumTable(file, os, "", 2);
 
 	WriteProtoFileFooter(os);
+
+
 
 	if(s_templateFileMade == false) 
 	{
