@@ -123,6 +123,28 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		const char *DEFAULT_FIELD_DESC_COLUMN_WIDTH = "8";
 		const char *DEFAULT_COLUMN_HEADER_COLOR = "8eb4e3";
 
+		//! @details
+		//! Turn comments into docbook paragraph form by replacing 
+		//! every 2 newlines into a paragraph.
+		//! Experimental, doesn't seem to work too well in all scenarios.
+		std::string ParagraphFormatComment(std::string const &comment)
+		{
+			size_t index = 0;
+			std::string paragraph  = "<para>";
+			paragraph += comment;
+			while (true) {
+				index = paragraph.find("\n\n", index);
+				if (index == string::npos)
+					break;
+
+				paragraph.replace(index, 2, "</para>\n<para>");
+
+				index += 3;
+			}
+			paragraph += "</para>";
+			return paragraph;
+		}
+
 		//! Docbook header that wraps the document under the Article tag.
 		void WriteDocbookHeader(std::ostringstream &os)
 		{
@@ -155,13 +177,12 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
 			os 
 				<< "<sect1>"
-				<< "<title> Message: " << title << "</title>"
-				<< "<para>" << description << "</para>"
-				<< "<informaltable frame=\"all\""
-				<< " xml:id=\"" << xmlID << "\">"
-				<< "<tgroup cols=\"4\">"
-				<< " <colspec colname=\"c1\" colnum=\"1\""
-				<< " colwidth=\"";
+				<< "<title> Message: " << title << "</title>" << std::endl
+				<< "<para>" << description << "</para>" << std::endl
+				<< "<informaltable frame=\"all\"" << std::endl
+				<< " xml:id=\"" << xmlID << "\">" << std::endl
+				<< "<tgroup cols=\"4\">" << std::endl
+				<< " <colspec colname=\"c1\" colnum=\"1\" colwidth=\"";
 
 			itr = options.find(OPTION_NAME_FIELD_NAME_COLUMN_WIDTH);
 			if(itr != options.end())
@@ -170,77 +191,75 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				os << DEFAULT_FIELD_NAME_COLUMN_WIDTH;
 
 			os
-				<< "*\" />"
+				<< "*\" />"<< std::endl
 				<< "<colspec colname=\"c2\" colnum=\"2\""
 				<< " colwidth=\"";
 
 			itr = options.find(OPTION_NAME_FIELD_TYPE_COLUMN_WIDTH);
 			if(itr != options.end())
-				os << itr->second;
+				os << itr->second << std::endl;
 			else
 				os << DEFAULT_FIELD_TYPE_COLUMN_WIDTH;
 
 			os
-				<< "*\" />"
+				<< "*\" />" << std::endl
 				<< "<colspec colname=\"c3\" colnum=\"3\""
 				<< " colwidth=\"";
-			
+
 			itr = options.find(OPTION_NAME_FIELD_RULE_COLUMN_WIDTH);
 			if(itr != options.end())
-				os << itr->second;
+				os << itr->second << std::endl;
 			else
 				os << DEFAULT_FIELD_RULES_COLUMN_WIDTH;
 
 			os
-				<< "*\" />"
+				<< "*\" />" << std::endl
 				<< "<colspec colname=\"c4\" colnum=\"4\""
 				<< " colwidth=\"";
-			
+
 			itr = options.find(OPTION_NAME_FIELD_DESC_COLUMN_WIDTH);
 			if(itr != options.end())
-				os << itr->second;
+				os << itr->second << std::endl;
 			else
 				os << DEFAULT_FIELD_DESC_COLUMN_WIDTH;
 
 			os
-				<<"*\" />"
-				<< "<thead>"
-				<< "<row>"
+				<<"*\" />" << std::endl
+				<< "<thead>" << std::endl
+				<< "<row>" << std::endl
 				<< "<?dbhtml bgcolor=\"#";
-			
+
 			itr = options.find(OPTION_NAME_COLUMN_HEADER_COLOR);
 			if(itr != options.end())
-				os << itr->second;
+				os << itr->second << std::endl;
 			else
 				os << DEFAULT_COLUMN_HEADER_COLOR;
 
 			os
-				<<"\" ?>"
+				<<"\" ?>"<< std::endl
 				<< "<?dbfo bgcolor=\"#";
 			itr = options.find(OPTION_NAME_COLUMN_HEADER_COLOR);
 			if(itr != options.end())
-				os << itr->second;
+				os << itr->second << std::endl;
 			else
 				os << DEFAULT_COLUMN_HEADER_COLOR;
 			os
-				<<"\" ?>"
-				<< "<entry>Element</entry>"
-				<< "<entry>Type</entry>"
-				<< "<entry>Occurs</entry>"
-				<< "<entry>Description</entry>"
-				<< "</row>"
-				<< "</thead>"
-				<< "<tbody>"
-				<< std::endl;
+				<<"\" ?>"<< std::endl
+				<< "\t<entry>Element</entry>" << std::endl
+				<< "\t<entry>Type</entry>"<< std::endl
+				<< "\t<entry>Occurs</entry>"<< std::endl
+				<< "\t<entry>Description</entry>"<< std::endl
+				<< "</row>"<< std::endl
+				<< "</thead>"<< std::endl
+				<< "<tbody>"<< std::endl;
 		}
 		void WriteInformalTableFooter(std::ostringstream &os)
 		{
 			os 
-				<< "</tbody>"
-				<< "</tgroup>"
-				<< "</informaltable>"
-				<< "</sect1>"
-				<< std::endl;
+				<< "</tbody>"<< std::endl
+				<< "</tgroup>"<< std::endl
+				<< "</informaltable>"<< std::endl
+				<< "</sect1>"<< std::endl;
 		}
 
 		void WriteInformalTableEntry(
@@ -250,15 +269,18 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 			string const &occurrence,
 			string const &comment)
 		{
+			std::string paragraphComment = ParagraphFormatComment(comment);
 			os 
-				<< "<row>"
-				<< "<entry>" << fieldname << "</entry>"
-				<< "<entry>" << type << "</entry>"
-				<< "<entry>" << occurrence << "</entry>"
-				<< "<entry>" << comment << "</entry>"
-				<< "</row>"
+				<< "<row>"<<std::endl
+				<< "\t<entry>" << fieldname << "</entry>" << std::endl
+				<< "\t<entry>" << type << "</entry>" << std::endl
+				<< "\t<entry>" << occurrence << "</entry>" << std::endl
+				<< "\t<entry>" << paragraphComment << "</entry>" << std::endl
+				<< "</row>"<<std::endl
 				<< std::endl;
 		}
+
+
 
 		std::string MakeXLink(std::string const &messageName, std::string const &displayName)
 		{
