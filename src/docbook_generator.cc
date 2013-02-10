@@ -3,7 +3,7 @@
 // http://code.google.com/p/protobuf/
 //
 // Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are
+//// modification, are permitted provided that the following conditions are
 // met:
 //
 //     * Redistributions of source code must retain the above copyright
@@ -42,7 +42,7 @@
 #include <string>
 #include <sstream>
 #include <map>
-
+#include <iomanip>
 // For debugging only
 //#include <Windows.h>
 
@@ -114,7 +114,10 @@ namespace {
 	char const *OPTION_NAME_FIELD_TYPE_COLUMN_WIDTH = "field_type_column_width";
 	char const *OPTION_NAME_FIELD_RULE_COLUMN_WIDTH = "field_rules_column_width";
 	char const *OPTION_NAME_FIELD_DESC_COLUMN_WIDTH = "field_desc_column_width";
+	
 	char const *OPTION_NAME_COLUMN_HEADER_COLOR = "column_header_color";
+	char const *OPTION_NAME_ROW_COLOR = "row_color";
+	char const *OPTION_NAME_ROW_COLOR_ALT = "row_color_alt";
 
 	char const *DEFAULT_OUTPUT_NAME = "docbook_out.xml";
 
@@ -124,9 +127,23 @@ namespace {
 	char const *DEFAULT_FIELD_TYPE_COLUMN_WIDTH = "3";
 	char const *DEFAULT_FIELD_RULES_COLUMN_WIDTH = "3";
 	char const *DEFAULT_FIELD_DESC_COLUMN_WIDTH = "8";
-	char const *DEFAULT_COLUMN_HEADER_COLOR = "8eb4e3";
 	
 	std::map<string, string> s_docbookOptions;
+
+	//! @details
+	//! Static field that controls the row color. May be overridden through
+	//! OPTION_NAME_ROW_COLOR.
+	string s_rowColor = "ffffff";
+
+	//! @details
+	//! Static field that controls the alternate row color. May be 
+	//! overridden through OPTION_NAME_ROW_COLOR_ALT.
+	string s_rowColorAlt = "e9edf4";
+
+	//! @details
+	//! Static field that controls the header color. May be overridden through
+	//! OPTION_NAME_COLUMN_HEADER_COLOR.
+	string s_columnHeaderColor = "c8c8c8";
 
 	//! @details
 	//! This field marks the first time DocBookGenerator::Generate method is
@@ -200,7 +217,7 @@ namespace {
 				cleanedComment.append("&gt;");
 				break;
 			default:
-				if(c < 0 || c > 0x7F)
+				if(c <= 0 || c > 0x7F)
 					c = ' ';
 				cleanedComment.append(1, c); 
 				break;
@@ -244,6 +261,20 @@ namespace {
 				}
 				break;
 			case FieldDescriptor::TYPE_BYTES:
+				{
+					std::string const &bytes = fd->default_value_string();
+					std::ostringstream ss;
+					ss << std::hex << std::uppercase << std::setfill( '0' );
+					for(unsigned int i=0; i<bytes.size(); ++i)
+					{
+						ss << std::setw( 2 ) << (int)bytes[i]<< ' ';
+					}
+
+					defaultStringOs << ss.str();
+				}
+				break;
+			case FieldDescriptor::TYPE_STRING:
+				defaultStringOs << SanitizeCommentForXML(fd->default_value_string());
 				break;
 			case FieldDescriptor::TYPE_DOUBLE:
 				defaultStringOs << fd->default_value_double();
@@ -330,15 +361,18 @@ namespace {
 		std::ostringstream &os, 
 		string const &xmlID, 
 		string const &title,
-		string const &description,
+		string const &comment,
 		int sectionLevel)
 	{
 		std::map<string,string>::const_iterator itr;
 
+		string cleanComment = SanitizeCommentForXML(comment);
+		string paragraphComment = ParagraphFormatComment(cleanComment);
+
 		os 
 			<< "<sect" << sectionLevel << ">"
 			<< "<title> Message: " << title << "</title>" << std::endl
-			<< "<para>" << description << "</para>" << std::endl
+			<< paragraphComment << std::endl
 			<< "<informaltable frame=\"all\""
 			<< " xml:id=\"" << xmlID << "\">" << std::endl
 			<< "<tgroup cols=\"4\">" << std::endl
@@ -389,23 +423,16 @@ namespace {
 			<< "<row>" << std::endl
 			<< "<?dbhtml bgcolor=\"#";
 
-		itr = s_docbookOptions.find(OPTION_NAME_COLUMN_HEADER_COLOR);
-		if(itr != s_docbookOptions.end())
-			os << itr->second;
-		else
-			os << DEFAULT_COLUMN_HEADER_COLOR;
+		os << s_columnHeaderColor;
 
 		os
 			<<"\" ?>"<< std::endl
 			<< "<?dbfo bgcolor=\"#";
-		itr = s_docbookOptions.find(OPTION_NAME_COLUMN_HEADER_COLOR);
-		if(itr != s_docbookOptions.end())
-			os << itr->second;
-		else
-			os << DEFAULT_COLUMN_HEADER_COLOR;
+
+		os << s_columnHeaderColor;
 		os
 			<<"\" ?>"<< std::endl
-			<< "\t<entry>Element</entry>" << std::endl
+			<< "\t<entry>Field</entry>" << std::endl
 			<< "\t<entry>Type</entry>"<< std::endl
 			<< "\t<entry>Rule</entry>"<< std::endl
 			<< "\t<entry>Description</entry>"<< std::endl
@@ -466,20 +493,14 @@ namespace {
 			<< "<row>" << std::endl
 			<< "<?dbhtml bgcolor=\"#";
 
-		itr = s_docbookOptions.find(OPTION_NAME_COLUMN_HEADER_COLOR);
-		if(itr != s_docbookOptions.end())
-			os << itr->second;
-		else
-			os << DEFAULT_COLUMN_HEADER_COLOR;
+		os << s_columnHeaderColor;
 
 		os
 			<<"\" ?>"<< std::endl
 			<< "<?dbfo bgcolor=\"#";
-		itr = s_docbookOptions.find(OPTION_NAME_COLUMN_HEADER_COLOR);
-		if(itr != s_docbookOptions.end())
-			os << itr->second;
-		else
-			os << DEFAULT_COLUMN_HEADER_COLOR;
+
+		os << s_columnHeaderColor;
+
 		os
 			<<"\" ?>"<< std::endl
 			<< "\t<entry>Element</entry>" << std::endl
@@ -505,12 +526,24 @@ namespace {
 		string const &type,
 		string const &occurrence,
 		string const &defaultString,
-		string const &comment)
+		string const &comment,
+		bool alternateColor)
 	{
 		string cleanComment = SanitizeCommentForXML(comment);
 		string paragraphComment = ParagraphFormatComment(cleanComment);
+		string cellcolor = s_rowColor;
+		if(alternateColor)
+		{
+			cellcolor = s_rowColorAlt;
+		}
 		os 
-			<< "<row>"<<std::endl
+			<< "<row>"
+			<< "<?dbhtml bgcolor=\"#" 
+			<<cellcolor
+			<<"\" ?><?dbfo bgcolor=\"#"
+			<<cellcolor
+			<<"\" ?>"
+			<<std::endl
 			<< "\t<entry>" << fieldname << "</entry>" << std::endl
 			<< "\t<entry>" << type << "</entry>" << std::endl
 			<< "\t<entry>" << occurrence << "</entry>" << std::endl
@@ -593,13 +626,15 @@ namespace {
 				break;
 			}
 
+			bool alternateColor = (i%2 != 0);
 			WriteMessageInformalTableEntry(
 				os, 
 				fd->name(),
 				typeName,
 				labelStr,
 				MakeDefaultValueString(fd),
-				GetDescriptorComment(fd));
+				GetDescriptorComment(fd),
+				alternateColor);
 		}
 	}
 
@@ -659,21 +694,24 @@ namespace {
 		string const &descriptorName,
 		int sectionLevel)
 	{
-		// XML ID is an unique ID that is used in XLink. Since "." is not 
-		// allowed, some sanitization is needed by replacing "." with "_".
-		string xmlID = messageDescriptor->full_name();
-		std::replace(xmlID.begin(), xmlID.end(),'.', '_');
+		if(messageDescriptor->field_count() > 0)
+		{
+			// XML ID is an unique ID that is used in XLink. Since "." is not 
+			// allowed, some sanitization is needed by replacing "." with "_".
+			string xmlID = messageDescriptor->full_name();
+			std::replace(xmlID.begin(), xmlID.end(),'.', '_');
 
-		WriteMessageInformalTableHeader(
-			os,
-			xmlID, 
-			descriptorName,
-			GetDescriptorComment(messageDescriptor),
-			sectionLevel);
+			WriteMessageInformalTableHeader(
+				os,
+				xmlID, 
+				descriptorName,
+				GetDescriptorComment(messageDescriptor),
+				sectionLevel);
 
-		WriteMessageFieldEntries(os, messageDescriptor);
+			WriteMessageFieldEntries(os, messageDescriptor);
 
-		WriteInformalTableFooter(os, sectionLevel);
+			WriteInformalTableFooter(os, sectionLevel);
+		}
 	}
 
 	//! @details
@@ -754,7 +792,9 @@ namespace {
 			<< std::endl;
 		WriteDocbookFooter(templateOs);
 
-		scoped_ptr<io::ZeroCopyOutputStream> output(context.Open(DEFAULT_OUTPUT_NAME));
+		scoped_ptr<io::ZeroCopyOutputStream> output(
+			context.Open(DEFAULT_OUTPUT_NAME));
+
 		io::Printer printer(output.get(), '$');
 		printer.PrintRaw(templateOs.str().c_str());
 	}
@@ -771,6 +811,25 @@ DocbookGenerator::DocbookGenerator()
 	// Upon construction, read the docbook.properties file once to load up
 	// all the user options.
 	s_docbookOptions = utils::ParseProperty("docbook.properties");
+
+	std::map<string, string>::const_iterator itr;
+	itr = s_docbookOptions.find(OPTION_NAME_ROW_COLOR);
+	if(itr != s_docbookOptions.end())
+	{
+		s_rowColor = itr->second;
+	}
+
+	itr = s_docbookOptions.find(OPTION_NAME_ROW_COLOR_ALT);
+	if(itr != s_docbookOptions.end())
+	{
+		s_rowColorAlt = itr->second;
+	}
+
+	itr = s_docbookOptions.find(OPTION_NAME_COLUMN_HEADER_COLOR);
+	if(itr != s_docbookOptions.end())
+	{
+		s_columnHeaderColor = itr->second;
+	}
 }
 
 DocbookGenerator::~DocbookGenerator() 
