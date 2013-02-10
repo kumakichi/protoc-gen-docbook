@@ -49,6 +49,9 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
 	namespace utils {
 
+		//! @details
+		//! Helper method to trim the beginning and ending white spaces within 
+		//! a string.
 		std::string Trim(const std::string& str)
 		{
 			std::string s = str;
@@ -112,7 +115,6 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		const char *OPTION_NAME_FIELD_DESC_COLUMN_WIDTH = "field_desc_column_width";
 		const char *OPTION_NAME_COLUMN_HEADER_COLOR = "column_header_color";
 
-
 		const char *DEFAULT_OUTPUT_NAME = "docbook_out.xml";
 
 		const char *DEFAULT_INSERTION_POINT= "insertion_point";
@@ -145,6 +147,75 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 			return paragraph;
 		}
 
+		//! @details
+		//! Clean up the comment string for any special characters
+		//! to ensure it is acceptable in XML format.
+		std::string SanitizeCommentForXML(std::string const &comment)
+		{
+			std::string cleanedComment;
+			cleanedComment.reserve(comment.size());
+			for(size_t pos = 0; pos != comment.size(); ++pos) 
+			{
+				char c = comment[pos];
+				switch(c) 
+				{
+				case '&':  
+					cleanedComment.append("&amp;");       
+					break;
+				case '\"': 
+					cleanedComment.append("&quot;");      
+					break;
+				case '\'': 
+					cleanedComment.append("&apos;");      
+					break;
+				case '<':  
+					cleanedComment.append("&lt;");
+					break;
+				case '>':  
+					cleanedComment.append("&gt;");
+					break;
+				default:
+					if(c < 0 || c > 0x7F)
+						c = ' ';
+					cleanedComment.append(1, c); 
+					break;
+				}
+			}
+			return cleanedComment;
+		}
+
+		std::string MakeXLink(std::string const &messageName, std::string const &displayName)
+		{
+			std::ostringstream os;
+
+			std::string refName = messageName;
+			std::replace(
+				refName.begin(),
+				refName.end(),
+				'.', 
+				'_');
+			os 
+				<< "<emphasis role=\"underline\""
+				<< " xlink:href=\"" << "#" << refName << "\">"
+				<< displayName<< "</emphasis>";
+
+			return os.str();
+		}
+
+		template <typename DescriptorType>
+		static std::string GetDescriptorComment(const DescriptorType* descriptor) {
+			SourceLocation location;
+			string comments;
+			if (descriptor->GetSourceLocation(&location)) {
+				comments = location.leading_comments;
+				comments += " ";
+				comments += location.trailing_comments;
+			}
+
+			return comments;
+		}
+
+		//! @details
 		//! Docbook header that wraps the document under the Article tag.
 		void WriteDocbookHeader(std::ostringstream &os)
 		{
@@ -158,15 +229,29 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				<< std::endl;		
 		}
 
+		//! @details
 		//! Docbook footer that closes the article tag
 		void WriteDocbookFooter(std::ostringstream &os)
 		{
-			os 
-				<< "</article>"
-				<< std::endl;		
+			os << "</article>" << std::endl;		
 		}
 
-		void WriteInformalTableHeader(
+		void WriteProtoFileHeader(std::ostringstream &os, FileDescriptor const *fileDescriptor)
+		{			
+			os << "<sect1>"
+				<< "<title> File: " << fileDescriptor->name() << "</title>" << std::endl;
+		}
+
+		void WriteProtoFileFooter(std::ostringstream &os)
+		{
+			os << "</sect1>" << std::endl;
+		}
+
+		//! @details
+		//! Write the Informal Table Header for a Message type.
+		//! This will define the column header, width and style of the
+		//! field table.
+		void WriteMessageInformalTableHeader(
 			std::ostringstream &os, 
 			std::string const &xmlID, 
 			std::string const &title,
@@ -176,7 +261,7 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 			std::map<std::string,std::string>::const_iterator itr;
 
 			os 
-				<< "<sect1>"
+				<< "<sect2>"
 				<< "<title> Message: " << title << "</title>" << std::endl
 				<< "<para>" << description << "</para>" << std::endl
 				<< "<informaltable frame=\"all\"" << std::endl
@@ -253,23 +338,100 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				<< "</thead>"<< std::endl
 				<< "<tbody>"<< std::endl;
 		}
+
+		void WriteEnumInformalTableHeader(
+			std::ostringstream &os, 
+			std::string const &xmlID, 
+			std::string const &title,
+			std::string const &description,
+			std::map<std::string,std::string> const &options)
+		{
+			std::map<std::string,std::string>::const_iterator itr;
+
+			os 
+				<< "<sect2>"
+				<< "<title> Enum: " << title << "</title>" << std::endl
+				<< "<para>" << description << "</para>" << std::endl
+				<< "<informaltable frame=\"all\"" << std::endl
+				<< " xml:id=\"" << xmlID << "\">" << std::endl
+				<< "<tgroup cols=\"3\">" << std::endl
+				<< " <colspec colname=\"c1\" colnum=\"1\" colwidth=\"";
+
+			itr = options.find(OPTION_NAME_FIELD_NAME_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second;
+			else
+				os << DEFAULT_FIELD_NAME_COLUMN_WIDTH;
+
+			os
+				<< "*\" />"<< std::endl
+				<< "<colspec colname=\"c2\" colnum=\"2\""
+				<< " colwidth=\"";
+
+			itr = options.find(OPTION_NAME_FIELD_TYPE_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second << std::endl;
+			else
+				os << DEFAULT_FIELD_TYPE_COLUMN_WIDTH;
+
+			os
+				<< "*\" />" << std::endl
+				<< "<colspec colname=\"c3\" colnum=\"3\""
+				<< " colwidth=\"";
+
+			itr = options.find(OPTION_NAME_FIELD_RULE_COLUMN_WIDTH);
+			if(itr != options.end())
+				os << itr->second << std::endl;
+			else
+				os << DEFAULT_FIELD_RULES_COLUMN_WIDTH;
+
+			os
+				<< "*\" />" << std::endl
+				<< "<thead>" << std::endl
+				<< "<row>" << std::endl
+				<< "<?dbhtml bgcolor=\"#";
+
+			itr = options.find(OPTION_NAME_COLUMN_HEADER_COLOR);
+			if(itr != options.end())
+				os << itr->second << std::endl;
+			else
+				os << DEFAULT_COLUMN_HEADER_COLOR;
+
+			os
+				<<"\" ?>"<< std::endl
+				<< "<?dbfo bgcolor=\"#";
+			itr = options.find(OPTION_NAME_COLUMN_HEADER_COLOR);
+			if(itr != options.end())
+				os << itr->second << std::endl;
+			else
+				os << DEFAULT_COLUMN_HEADER_COLOR;
+			os
+				<<"\" ?>"<< std::endl
+				<< "\t<entry>Element</entry>" << std::endl
+				<< "\t<entry>Value</entry>"<< std::endl
+				<< "\t<entry>Description</entry>"<< std::endl
+				<< "</row>"<< std::endl
+				<< "</thead>"<< std::endl
+				<< "<tbody>"<< std::endl;
+		}
 		void WriteInformalTableFooter(std::ostringstream &os)
 		{
 			os 
 				<< "</tbody>"<< std::endl
 				<< "</tgroup>"<< std::endl
 				<< "</informaltable>"<< std::endl
-				<< "</sect1>"<< std::endl;
+				<< "</sect2>"<< std::endl;
 		}
 
-		void WriteInformalTableEntry(
+		void WriteMessageInformalTableEntry(
 			std::ostringstream &os, 
 			string const &fieldname,
 			string const &type,
 			string const &occurrence,
 			string const &comment)
 		{
-			std::string paragraphComment = ParagraphFormatComment(comment);
+			std::string cleanComment = SanitizeCommentForXML(comment);
+			std::string paragraphComment = ParagraphFormatComment(cleanComment);
 			os 
 				<< "<row>"<<std::endl
 				<< "\t<entry>" << fieldname << "</entry>" << std::endl
@@ -280,24 +442,82 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 				<< std::endl;
 		}
 
-
-
-		std::string MakeXLink(std::string const &messageName, std::string const &displayName)
+		void WriteEnumInformalTableEntry(
+			std::ostringstream &os, 
+			string const &fieldname,
+			int enumValue,
+			string const &comment)
 		{
-			std::ostringstream os;
-
-			std::string refName = messageName;
-			std::replace(
-				refName.begin(),
-				refName.end(),
-				'.', 
-				'_');
+			std::string cleanComment = SanitizeCommentForXML(comment);
+			std::string paragraphComment = ParagraphFormatComment(cleanComment);
 			os 
-				<< "<emphasis role=\"underline\""
-				<< " xlink:href=\"" << "#" << refName << "\">"
-				<< displayName<< "</emphasis>";
+				<< "<row>"<<std::endl
+				<< "\t<entry>" << fieldname << "</entry>" << std::endl
+				<< "\t<entry>" << enumValue << "</entry>" << std::endl
+				<< "\t<entry>" << paragraphComment << "</entry>" << std::endl
+				<< "</row>"<<std::endl
+				<< std::endl;
+		}
 
-			return os.str();
+		void WriteMessageFieldEntries( 
+			std::ostringstream &os, 
+			Descriptor const *messageDescriptor)
+		{
+			for (int i = 0; i < messageDescriptor->field_count(); i++) {
+				std::string labelStr;
+
+				switch(messageDescriptor->field(i)->label())
+				{
+				case FieldDescriptor::LABEL_OPTIONAL:
+					labelStr = "optional";
+					break;
+				case FieldDescriptor::LABEL_REPEATED:
+					labelStr = "repeated";
+					break;
+				case FieldDescriptor::LABEL_REQUIRED:
+					labelStr = "required";
+					break;
+				}
+
+				std::string typeName;
+
+				switch(messageDescriptor->field(i)->type())
+				{
+				case FieldDescriptor::TYPE_MESSAGE:
+					typeName = MakeXLink(
+						messageDescriptor->field(i)->message_type()->full_name(),
+						messageDescriptor->field(i)->message_type()->name());
+					break;
+				case FieldDescriptor::TYPE_ENUM:
+					typeName = MakeXLink(
+						messageDescriptor->field(i)->enum_type()->full_name(),
+						messageDescriptor->field(i)->enum_type()->name());
+					break;
+				default:
+					typeName = messageDescriptor->field(i)->type_name();
+					break;
+				}
+
+				WriteMessageInformalTableEntry(
+					os, 
+					messageDescriptor->field(i)->name(),
+					typeName,
+					labelStr,
+					GetDescriptorComment(messageDescriptor->field(i)));
+			}
+		}
+
+		void WriteEnumFieldEntries(
+			std::ostringstream &os, 
+			EnumDescriptor const *enumDescriptor)
+		{
+			for (int i = 0; i < enumDescriptor->value_count(); i++) {
+				WriteEnumInformalTableEntry(
+					os, 
+					enumDescriptor->value(i)->name(),
+					i,
+					GetDescriptorComment(enumDescriptor->value(i)));
+			}
 		}
 
 		void MakeTemplateFile(GeneratorContext &context)
@@ -325,20 +545,6 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 	DocbookGenerator::~DocbookGenerator() 
 	{
 	}
-
-	template <typename DescriptorType>
-	static std::string GetDescriptorComment(const DescriptorType* descriptor) {
-		SourceLocation location;
-		string comments;
-		if (descriptor->GetSourceLocation(&location)) {
-			comments = location.leading_comments;
-			comments += " ";
-			comments += location.trailing_comments;
-		}
-
-		return comments;
-	}
-
 	bool DocbookGenerator::Generate(const FileDescriptor* file,
 		const string& parameter,
 		GeneratorContext* context,
@@ -346,87 +552,47 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 	{
 		//Sleep(5000);
 
-		std::ostringstream _docbookStream;
 		std::ostringstream os;
+		WriteProtoFileHeader(os, file);
 
 		for (int i = 0; i < file->message_type_count(); i++) 
 		{
 			Descriptor const *messageDescriptor = file->message_type(i);
 			string cleanName = messageDescriptor->full_name();
 
-			std::replace(
-				cleanName.begin(),
-				cleanName.end(),
-				'.', 
-				'_');
+			std::replace(cleanName.begin(), cleanName.end(),'.', '_');
 
-			WriteInformalTableHeader(
-				_docbookStream,
+			WriteMessageInformalTableHeader(
+				os,
 				cleanName, 
 				messageDescriptor->name(),
 				GetDescriptorComment(messageDescriptor),
 				_options);
 
-			for (int i = 0; i < messageDescriptor->field_count(); i++) {
-				std::string labelStr;
+			WriteMessageFieldEntries(os, messageDescriptor);
 
-				switch(messageDescriptor->field(i)->label())
-				{
-				case FieldDescriptor::LABEL_OPTIONAL:
-					labelStr = "optional";
-					break;
-				case FieldDescriptor::LABEL_REPEATED:
-					labelStr = "repeated";
-					break;
-				case FieldDescriptor::LABEL_REQUIRED:
-					labelStr = "required";
-					break;
-				}
-
-				std::string typeName;
-
-				if(messageDescriptor->field(i)->type() == FieldDescriptor::TYPE_MESSAGE)
-				{
-					typeName = MakeXLink(
-						messageDescriptor->field(i)->message_type()->full_name(),
-						messageDescriptor->field(i)->message_type()->name());
-				}
-				else
-				{
-					typeName = messageDescriptor->field(i)->type_name();
-				}
-
-				WriteInformalTableEntry(
-					_docbookStream, 
-					messageDescriptor->field(i)->name(),
-					typeName,
-					labelStr,
-					GetDescriptorComment(messageDescriptor->field(i)));
-			}
-			WriteInformalTableFooter(_docbookStream);
+			WriteInformalTableFooter(os);
 		}
 
-		//for (int i = 0; i < file->enum_type_count(); i++) {
+		for (int i = 0; i < file->enum_type_count(); i++) 
+		{
+			EnumDescriptor const *enumDescriptor = file->enum_type(i);
+			string cleanName = enumDescriptor->full_name();
 
-		//	EnumDescriptor const *descriptor = file->enum_type(i);
-		//	std::cout << "message type = " << descriptor->full_name() << std::endl;
-		//	WriteDocCommentBody(NULL, descriptor);
+			std::replace(cleanName.begin(), cleanName.end(),'.','_');
 
-		//	for (int i = 0; i < descriptor->value_count(); i++) {
-		//		std::cout << "field: " 
-		//			<< std::endl
-		//			<< "\t"
-		//			<<"type = "
-		//			<< descriptor->value(i)->number()
-		//			<< std::endl
-		//			<< "\t"
-		//			<< "name = " 
-		//			<< descriptor->value(i)->full_name() 
-		//			<< std::endl
-		//			<< "\t";
-		//		WriteDocCommentBody(NULL, descriptor->value(i));
-		//	}
-		//}
+			WriteEnumInformalTableHeader(
+				os,
+				cleanName, 
+				enumDescriptor->name(),
+				GetDescriptorComment(enumDescriptor),
+				_options);
+
+			WriteEnumFieldEntries(os, enumDescriptor);
+			WriteInformalTableFooter(os);
+		}
+
+		WriteProtoFileFooter(os);
 
 		if(templateFileMade == false) 
 		{
@@ -437,7 +603,7 @@ namespace google { namespace protobuf { namespace compiler { namespace docbook {
 		scoped_ptr<io::ZeroCopyOutputStream> output(
 			context->OpenForInsert(DEFAULT_OUTPUT_NAME, DEFAULT_INSERTION_POINT));
 		io::Printer printer(output.get(), '$');
-		printer.PrintRaw(_docbookStream.str().c_str());
+		printer.PrintRaw(os.str().c_str());
 
 		if (printer.failed()) {
 			*error = "CodeGenerator detected write error.";
