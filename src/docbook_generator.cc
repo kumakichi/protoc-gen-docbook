@@ -111,7 +111,17 @@ namespace {
 	char const *OPTION_NAME_FIELD_TYPE_COLUMN_WIDTH = "field_type_column_width";
 	char const *OPTION_NAME_FIELD_RULE_COLUMN_WIDTH = "field_rules_column_width";
 	char const *OPTION_NAME_FIELD_DESC_COLUMN_WIDTH = "field_desc_column_width";
-	
+
+	//! @details
+	//! Scalar Value Table is a table that holds descriptions for primitive 
+	//! types in protobuf (e.g. int32, fixed32, etc). It is a convenient reminder
+	//! on what those type means.
+	//!
+	//! 1 to include 
+	//! 0 to exclude
+	//!
+	char const *OPTION_NAME_INCLUDE_SCALAR_VALUE_TABLE = "include_scalar_value_table";
+
 	char const *OPTION_NAME_COLUMN_HEADER_COLOR = "column_header_color";
 	char const *OPTION_NAME_ROW_COLOR = "row_color";
 	char const *OPTION_NAME_ROW_COLOR_ALT = "row_color_alt";
@@ -154,6 +164,11 @@ namespace {
 	//! Static field that controls the header color. May be overridden through
 	//! OPTION_NAME_COLUMN_HEADER_COLOR.
 	string s_columnHeaderColor = "c8c8c8";
+
+	//! @details
+	//! To include or exclude the scalar value table.
+	//! See OPTION_NAME_INCLUDE_SCALAR_VALUE_TABLE
+	bool s_includeScalarValueTable = true;
 
 	//! @details
 	//! This field marks the first time DocBookGenerator::Generate method is
@@ -651,7 +666,16 @@ namespace {
 					fd->enum_type()->name());
 				break;
 			default:
-				typeName = MakeXLinkScalarTable(fd->type_name());
+
+				if(s_includeScalarValueTable)
+				{
+					typeName = MakeXLinkScalarTable(fd->type_name());
+				}
+				else
+				{
+					typeName = fd->type_name();
+				}
+				
 				break;
 			}
 
@@ -813,7 +837,15 @@ namespace {
 		}
 	}
 
-	void WriteProtoTypeTable(std::ostringstream &os)
+	//! @details
+	//! Scalar Value Table is a table that holds descriptions for primitive 
+	//! types in protobuf (e.g. int32, fixed32, etc). It is a convenient reminder
+	//! on what those type means.
+	//! 
+	//! see OPTION_NAME_INCLUDE_SCALAR_VALUE_TABLE
+	//!
+	//! see https://developers.google.com/protocol-buffers/docs/proto
+	void WriteScalarValueTable(std::ostringstream &os)
 	{
 		const int NUM_TYPE = 15;
 		const int NUM_COLUMN = 4;
@@ -958,15 +990,19 @@ namespace {
 			
 			<< "<tbody>" << std::endl;
 
-
 		int i=0;
 		int j=0;
 		for(i=0; i<NUM_TYPE; ++i)
 		{
+			string cellcolor = s_rowColor;
+			if(i%2 == 1)
+			{
+				cellcolor = s_rowColorAlt;
+			}
 			os
 				<< "<row>"
-				<< "<?dbhtml bgcolor=\"#" <<s_rowColor << "\" ?>" << std::endl
-				<< "<?dbfo bgcolor=\"#" <<s_rowColor << "\" ?>" << std::endl;
+				<< "<?dbhtml bgcolor=\"#" <<cellcolor << "\" ?>" << std::endl
+				<< "<?dbfo bgcolor=\"#" <<cellcolor << "\" ?>" << std::endl;
 			for(j=0; j<NUM_COLUMN; ++j)
 			{
 				os << "<entry>" << table[i][j] << "</entry>" << std::endl;
@@ -990,7 +1026,12 @@ namespace {
 			<<DEFAULT_INSERTION_POINT
 			<<") -->" 
 			<< std::endl;
-		WriteProtoTypeTable(templateOs);
+
+		if(s_includeScalarValueTable)
+		{
+			WriteScalarValueTable(templateOs);
+		}
+		
 		WriteDocbookFooter(templateOs);
 
 		scoped_ptr<io::ZeroCopyOutputStream> output(
@@ -1031,6 +1072,19 @@ DocbookGenerator::DocbookGenerator()
 	{
 		s_columnHeaderColor = itr->second;
 	}
+
+	itr = s_docbookOptions.find(OPTION_NAME_INCLUDE_SCALAR_VALUE_TABLE);
+	if(itr != s_docbookOptions.end())
+	{
+		if(itr->second == "0")
+		{
+			s_includeScalarValueTable = false;
+		}
+		else
+		{
+			s_includeScalarValueTable = true;
+		}
+	}
 }
 
 DocbookGenerator::~DocbookGenerator() 
@@ -1043,18 +1097,22 @@ bool DocbookGenerator::Generate(
 	string *error) const 
 {
 	std::ostringstream os;
+
 	WriteProtoFileHeader(os, file);
 
+	// Go through each message defined within the file and write their
+	// information out recursively.
 	for (int i = 0; i < file->message_type_count(); i++) 
 	{
 		WriteMessage(os, file->message_type(i), "", 0);
 	}
 
+	// Write out the Enums defined within the scope of the file. These
+	// enums are not nested within Messages.
 	WriteEnumTable(file, os, "", 2);
 
+	// Close out the Proto and get ready for the next file.
 	WriteProtoFileFooter(os);
-
-
 
 	if(s_templateFileMade == false) 
 	{
@@ -1062,6 +1120,8 @@ bool DocbookGenerator::Generate(
 		MakeTemplateFile(*context);
 	}
 
+	// Everything should be appended below the "insertion point" so that 
+	// all information is written to a single docbook file.
 	scoped_ptr<io::ZeroCopyOutputStream> output(
 		context->OpenForInsert(DEFAULT_OUTPUT_NAME, DEFAULT_INSERTION_POINT));
 	io::Printer printer(output.get(), '$');
