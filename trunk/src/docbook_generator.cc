@@ -238,56 +238,6 @@ namespace {
 	int s_startingSectionLevel = 1;
 
 	//! @details
-	//! Turn comments into docbook paragraph form by replacing 
-	//! every 2 newlines into a paragraph.
-	//! Experimental, doesn't seem to work too well in all scenarios.
-	string ParagraphFormatComment(string const &comment)
-	{
-		// Occasionally there are some comments that has nothing but white
-		// spaces. This will eliminate those useless fillers and sanitize the
-		// comments.
-		if(utils::Trim(comment).empty())
-		{
-			return "";
-		}
-
-		size_t index = 0;
-		string paragraph  = "<para>";
-		paragraph += comment;
-		for(;;)
-		{
-			index = paragraph.find("\n\n", index);
-			if (index == string::npos)
-				break;
-
-			paragraph.replace(index, 2, "</para>\n<para>");
-
-			index += 3;
-		}
-		paragraph += "</para>";
-		return paragraph;
-	}
-
-	//! @details
-	//! Helper method that guards the section level field.
-	//!
-	//! @param[in] sectionLevel
-	//! level to guard
-	//!
-	//! @return
-	//! MAX_SECTION_LEVEL if too large, 1 if <= 0
-	int SectionLevel(int sectionLevel)
-	{
-		if(sectionLevel > MAX_SECTION_LEVEL)
-			return MAX_SECTION_LEVEL;
-
-		if(sectionLevel <= 0)
-			return 1;
-
-		return sectionLevel;
-	}
-
-	//! @details
 	//! Clean up the comment string for any special characters
 	//! to ensure it is acceptable in XML format.
 	//!
@@ -327,6 +277,59 @@ namespace {
 			}
 		}
 		return cleanedComment;
+	}
+
+
+	//! @details
+	//! Turn comments into docbook paragraph form by replacing 
+	//! every 2 newlines into a paragraph.
+	//! Experimental, doesn't seem to work too well in all scenarios.
+	string ParagraphFormatComment(string const &comment)
+	{
+		string cleanComment = SanitizeCommentForXML(comment);
+
+		// Occasionally there are some comments that has nothing but white
+		// spaces. This will eliminate those useless fillers and sanitize the
+		// comments.
+		if(utils::Trim(cleanComment).empty())
+		{
+			return "";
+		}
+
+		size_t index = 0;
+		string paragraph  = "<para>";
+		paragraph += cleanComment;
+		for(;;)
+		{
+			index = paragraph.find("\n\n", index);
+			if (index == string::npos)
+				break;
+
+			paragraph.replace(index, 2, "</para>\n<para>");
+
+			index += 3;
+		}
+		paragraph += "</para>";
+		return paragraph;
+	}
+
+	//! @details
+	//! Helper method that guards the section level field.
+	//!
+	//! @param[in] sectionLevel
+	//! level to guard
+	//!
+	//! @return
+	//! MAX_SECTION_LEVEL if too large, 1 if <= 0
+	int SectionLevel(int sectionLevel)
+	{
+		if(sectionLevel > MAX_SECTION_LEVEL)
+			return MAX_SECTION_LEVEL;
+
+		if(sectionLevel <= 0)
+			return 1;
+
+		return sectionLevel;
 	}
 
 	//! @details
@@ -379,6 +382,20 @@ namespace {
 
 		return os.str();
 	}
+
+	//! @details
+	//! Helper method to return an informative string if "packed" option
+	//! is enabled.
+	//! See https://developers.google.com/protocol-buffers/docs/proto
+	string MakePackedString(FieldDescriptor const *fd)
+	{
+		if(fd->is_packed())
+		{
+			return "[packed = true]";
+		}
+		return "";
+	}
+
 
 	//! @details
 	//! This method generate an informative default string if the field
@@ -451,6 +468,7 @@ namespace {
 
 			defaultStringOs << " ]";
 		}
+		defaultStringOs << " " << MakePackedString(fd);
 		return defaultStringOs.str();
 	}
 
@@ -490,12 +508,12 @@ namespace {
 
 	void WriteProtoFileHeader(
 		std::ostringstream &os, 
-		FileDescriptor const *fileDescriptor, 
+		FileDescriptor const *fd, 
 		int sectionLevel)
-	{			
+	{
 		os 
 			<< "<sect" << SectionLevel(sectionLevel) << ">"
-			<< "<title> File: " << fileDescriptor->name() << "</title>" << std::endl;
+			<< "<title> File: " << fd->name() << "</title>" << std::endl;
 	}
 
 	void WriteProtoFileFooter(std::ostringstream &os, int sectionLevel)
@@ -516,8 +534,7 @@ namespace {
 	{
 		std::map<string,string>::const_iterator itr;
 
-		string cleanComment = SanitizeCommentForXML(comment);
-		string paragraphComment = ParagraphFormatComment(cleanComment);
+		string paragraphComment = ParagraphFormatComment(comment);
 
 		os 
 			<< "<sect" << SectionLevel(sectionLevel) << ">"
@@ -679,8 +696,7 @@ namespace {
 		string const &comment,
 		bool alternateColor)
 	{
-		string cleanComment = SanitizeCommentForXML(comment);
-		string paragraphComment = ParagraphFormatComment(cleanComment);
+		string paragraphComment = ParagraphFormatComment(comment);
 		string cellcolor = s_rowColor;
 		if(alternateColor)
 		{
@@ -721,8 +737,7 @@ namespace {
 		string const &comment,
 		bool alternateColor)
 	{
-		string cleanComment = SanitizeCommentForXML(comment);
-		string paragraphComment = ParagraphFormatComment(cleanComment);
+		string paragraphComment = ParagraphFormatComment(comment);
 
 		string cellcolor = s_rowColor;
 		if(alternateColor)
