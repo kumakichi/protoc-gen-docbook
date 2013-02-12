@@ -28,6 +28,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Author: askldjd@gmail.com
+//
+// This file holds the generator that walks through the proto descriptor
+// structures and convert them to DocBook tables.
+// See http://code.google.com/p/protoc-gen-docbook/ for more information.
+//
 
 #include "docbook_generator.h"
 #include <google/protobuf/io/printer.h>
@@ -41,7 +46,7 @@
 #include <map>
 #include <iomanip>
 // For debugging only
-//#include <Windows.h>
+#include <Windows.h>
 
 namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
@@ -74,6 +79,9 @@ namespace utils {
 	//! Hate to reinvent the wheel here since there are about a million 
 	//! parser implementations out there. However, I hate to bring in Boost 
 	//! library just for something this trivial.
+	//!
+	//! This parser isn't smart enough to strip out comments on the
+	//! same line as the k/v pair.
 	std::map <string, string> ParseProperty(string const &filePath)
 	{
 		std::map <string, string> options;
@@ -126,9 +134,19 @@ namespace {
 	char const *OPTION_NAME_ROW_COLOR = "row_color";
 	char const *OPTION_NAME_ROW_COLOR_ALT = "row_color_alt";
 
+	char const *OPTION_NAME_STARTING_SECTION_LEVEL = "starting_section_level";
+
+	//! @details
+	//! Custom template file allows user to provide their own template file
+	//! and use "insertion point" to pinpoint where the tables should be
+	//! located. If not provided, a default template is provided.
+	char const *OPTION_NAME_CUSTOM_TEMPLATE_FILE = "custom_template_file";
+
 	char const *DEFAULT_OUTPUT_NAME = "docbook_out.xml";
 
 	char const *DEFAULT_INSERTION_POINT= "insertion_point";
+
+	char const *SCALAR_TABLE_INSERTION_POINT = "scalar_table";
 
 	char const *SCALAR_VALUE_TYPES_TABLE_XML_ID = "protobuf_scalar_value_types";
 
@@ -143,11 +161,27 @@ namespace {
 	//! wider than a column with the measure “1*” (or just “*”). These two forms 
 	//! can be mixed, as in “3*+1pc”. 
 	//! See http://www.docbook.org/tdg/en/html/colspec.html
-	char const *DEFAULT_FIELD_NAME_COLUMN_WIDTH = "4";
-	char const *DEFAULT_FIELD_TYPE_COLUMN_WIDTH = "3";
-	char const *DEFAULT_FIELD_RULES_COLUMN_WIDTH = "3";
-	char const *DEFAULT_FIELD_DESC_COLUMN_WIDTH = "8";
+	char const *DEFAULT_FIELD_NAME_COLUMN_WIDTH = "3";
+	char const *DEFAULT_FIELD_TYPE_COLUMN_WIDTH = "2";
+	char const *DEFAULT_FIELD_RULES_COLUMN_WIDTH = "2";
+	char const *DEFAULT_FIELD_DESC_COLUMN_WIDTH = "6";
+
+	char const *INSERTION_POINT_START_TAG = "<!-- @@protoc_insertion_point(";
+	char const *INSERTION_POINT_END_TAG = ") -->";
 	
+	//! @details
+	//! Highest <section> level, defined by DocBook
+	//! see http://oreilly.com/openbook/docbook/book/sect1.html
+	int const MAX_SECTION_LEVEL = 5;
+
+	//! @details
+	//! Highest <section> level allowed by the user.
+	//! protoc-gen-doc needs at least 2 levels to operate correctly
+	//! Worst case, we may use sect4 and sect5.
+	int const MAX_ALLOWED_SECTION_LEVEL_OPTION = 4;
+
+	//! @details
+	//! K/V pair that holds the options name and the options value.
 	std::map<string, string> s_docbookOptions;
 
 	//! @details
@@ -158,12 +192,23 @@ namespace {
 	//! @details
 	//! Static field that controls the alternate row color. May be 
 	//! overridden through OPTION_NAME_ROW_COLOR_ALT.
-	string s_rowColorAlt = "e9edf4";
+	string s_rowColorAlt = "f0f0f0";
 
 	//! @details
 	//! Static field that controls the header color. May be overridden through
 	//! OPTION_NAME_COLUMN_HEADER_COLOR.
-	string s_columnHeaderColor = "c8c8c8";
+	string s_columnHeaderColor = "A6B4C4";
+
+	//! @details
+	//! The name of the custom template file.
+	//! see s_customTemplateFile
+	string s_customTemplateFileName;
+
+	//! @details
+	//! Merge the output table into the template file. This is optional.
+	//! If template file is not specified, we should run in stand-alone
+	//! mode to generate a complete document.
+	string s_customTemplateFile;
 
 	//! @details
 	//! To include or exclude the scalar value table.
@@ -183,6 +228,14 @@ namespace {
 	//! DocbookGenerator needs to merge them all into the same xml file. The 
 	//! nature of this incompatibility results in this hack.
 	bool s_templateFileMade = false;
+
+	//! @details
+	//! Name of the DocBook output file.
+	string s_docbookOuputFileName = DEFAULT_OUTPUT_NAME;
+
+	//! @details
+	//! The starting <sect> used for the generated table.
+	int s_startingSectionLevel = 1;
 
 	//! @details
 	//! Turn comments into docbook paragraph form by replacing 
@@ -216,8 +269,32 @@ namespace {
 	}
 
 	//! @details
+	//! Helper method that guards the section level field.
+	//!
+	//! @param[in] sectionLevel
+	//! level to guard
+	//!
+	//! @return
+	//! MAX_SECTION_LEVEL if too large, 1 if <= 0
+	int SectionLevel(int sectionLevel)
+	{
+		if(sectionLevel > MAX_SECTION_LEVEL)
+			return MAX_SECTION_LEVEL;
+
+		if(sectionLevel <= 0)
+			return 1;
+
+		return sectionLevel;
+	}
+
+	//! @details
 	//! Clean up the comment string for any special characters
 	//! to ensure it is acceptable in XML format.
+	//!
+	//! @warning
+	//! Currently this method does not handle UTF-8 correctly, and this
+	//! should be revisited if unicode comments become a concern.
+	//!
 	string SanitizeCommentForXML(string const &comment)
 	{
 		string cleanedComment;
@@ -252,16 +329,27 @@ namespace {
 		return cleanedComment;
 	}
 
+	//! @details
+	//! Generate a Xlink for a message. This Xlink allows user to click
+	//! and navigate to different messages and enums.
+	//!
+	//! @param[in,out] string const & messageName
+	//! The full globally uniquue message name used to generate the link.
+	//!
+	//! @param[in,out] string const & displayName
+	//! The name of the link to display to user
+	//!
+	//! @return std::string
+	//! The generated Xlink
+	//!
 	string MakeXLink(string const &messageName, string const &displayName)
 	{
 		std::ostringstream os;
 
+		// Can't have "." in link, so replace them with underscores.
 		string refName = messageName;
-		std::replace(
-			refName.begin(),
-			refName.end(),
-			'.', 
-			'_');
+		std::replace(refName.begin(), refName.end(), '.', '_');
+
 		os 
 			<< "<emphasis role=\"underline\""
 			<< " xlink:href=\"" << "#" << refName << "\">"
@@ -270,6 +358,16 @@ namespace {
 		return os.str();
 	}
 
+	//! @details
+	//! Generate a Xlink to the Scalar Table. 
+	//! See OPTION_NAME_INCLUDE_SCALAR_VALUE_TABLE
+	//!
+	//! @param[in,out] string const & displayName
+	//! The name of the link to display to user
+	//!
+	//! @return std::string
+	//! The generated Xlink
+	//!
 	string MakeXLinkScalarTable(string const &displayName)
 	{
 		std::ostringstream os;
@@ -282,6 +380,16 @@ namespace {
 		return os.str();
 	}
 
+	//! @details
+	//! This method generate an informative default string if the field
+	//! has a default value.
+	//!
+	//! @param[in,out] FieldDescriptor const * fd
+	//! The descriptor of the field that may have the default value.
+	//!
+	//! @return std::string
+	//! A string that contains the default value, empty if no defaults.
+	//!
 	string MakeDefaultValueString(FieldDescriptor const *fd)
 	{
 		std::ostringstream defaultStringOs;
@@ -380,15 +488,19 @@ namespace {
 		os << "</article>" << std::endl;		
 	}
 
-	void WriteProtoFileHeader(std::ostringstream &os, FileDescriptor const *fileDescriptor)
+	void WriteProtoFileHeader(
+		std::ostringstream &os, 
+		FileDescriptor const *fileDescriptor, 
+		int sectionLevel)
 	{			
-		os << "<sect1>"
+		os 
+			<< "<sect" << SectionLevel(sectionLevel) << ">"
 			<< "<title> File: " << fileDescriptor->name() << "</title>" << std::endl;
 	}
 
-	void WriteProtoFileFooter(std::ostringstream &os)
+	void WriteProtoFileFooter(std::ostringstream &os, int sectionLevel)
 	{
-		os << "</sect1>" << std::endl;
+		os << "</sect" << SectionLevel(sectionLevel) << ">" << std::endl;
 	}
 
 	//! @details
@@ -408,7 +520,7 @@ namespace {
 		string paragraphComment = ParagraphFormatComment(cleanComment);
 
 		os 
-			<< "<sect" << sectionLevel << ">"
+			<< "<sect" << SectionLevel(sectionLevel) << ">"
 			<< "<title> Message: " << title << "</title>" << std::endl
 			<< paragraphComment << std::endl
 			<< "<informaltable frame=\"all\""
@@ -489,7 +601,7 @@ namespace {
 		std::map<string,string>::const_iterator itr;
 
 		os 
-			<< "<sect" << sectionLevel << ">"
+			<< "<sect" << SectionLevel(sectionLevel) << ">"
 			<< "<title> Enum: " << title << "</title>" << std::endl
 			<< "<para>" << description << "</para>" << std::endl
 			<< "<informaltable frame=\"all\""
@@ -519,7 +631,7 @@ namespace {
 			<< "<colspec colname=\"c3\" colnum=\"3\""
 			<< " colwidth=\"";
 
-		itr = s_docbookOptions.find(OPTION_NAME_FIELD_RULE_COLUMN_WIDTH);
+		itr = s_docbookOptions.find(OPTION_NAME_FIELD_DESC_COLUMN_WIDTH);
 		if(itr != s_docbookOptions.end())
 			os << itr->second;
 		else
@@ -555,7 +667,7 @@ namespace {
 			<< "</tbody>"<< std::endl
 			<< "</tgroup>"<< std::endl
 			<< "</informaltable>"<< std::endl
-			<< "</sect"<< sectionLevel << ">" <<std::endl;
+			<< "</sect"<< SectionLevel(sectionLevel) << ">" <<std::endl;
 	}
 
 	void WriteMessageInformalTableEntry(
@@ -762,11 +874,11 @@ namespace {
 				xmlID, 
 				descriptorName,
 				GetDescriptorComment(messageDescriptor),
-				sectionLevel);
+				SectionLevel(sectionLevel));
 
 			WriteMessageFieldEntries(os, messageDescriptor);
 
-			WriteInformalTableFooter(os, sectionLevel);
+			WriteInformalTableFooter(os, SectionLevel(sectionLevel));
 		}
 	}
 
@@ -1017,30 +1129,140 @@ namespace {
 			<< "</sect1>"<< std::endl;
 	}
 
+	//! @details
+	//! Makes the template file for the very first call of 
+	//! DocGenerator::Generate method. This is needed because 
+	//! GeneratorContext::OpenForInsert requires knowledge of the output file.
+	//! Hence, GeneratorContext::Open must be called once before 
+	//! GeneratorContext::OpenForInsert would work.
+	//!
+	//! @param[in,out] context
+	//! The generator context used to write the file.
 	void MakeTemplateFile(GeneratorContext &context)
 	{
-		std::ostringstream templateOs;
-		WriteDocbookHeader(templateOs);		
-		templateOs 
-			<< "<!-- @@protoc_insertion_point("
-			<<DEFAULT_INSERTION_POINT
-			<<") -->" 
-			<< std::endl;
-
-		if(s_includeScalarValueTable)
+		// If there is no custom template filename, it implies that we
+		// are going to use the default file template.
+		if(s_customTemplateFileName.empty())
 		{
-			WriteScalarValueTable(templateOs);
+			std::ostringstream defaultTemplateOs;
+			WriteDocbookHeader(defaultTemplateOs);		
+			defaultTemplateOs 
+				<< INSERTION_POINT_START_TAG
+				<< DEFAULT_INSERTION_POINT
+				<< INSERTION_POINT_END_TAG
+				<< std::endl;
+
+			if(s_includeScalarValueTable)
+			{
+				WriteScalarValueTable(defaultTemplateOs);
+			}
+
+			WriteDocbookFooter(defaultTemplateOs);
+
+			scoped_ptr<io::ZeroCopyOutputStream> output(
+				context.Open(s_docbookOuputFileName));
+
+			io::Printer printer(output.get(), '$');
+			printer.PrintRaw(defaultTemplateOs.str().c_str());
 		}
-		
-		WriteDocbookFooter(templateOs);
+		// Otherwise, user has provided a template. We use the user's
+		// template as base and clone a new file.
+		else
+		{
+			// This section writes the cloned file.
+			{
+				scoped_ptr<io::ZeroCopyOutputStream> output(
+					context.Open(s_docbookOuputFileName));
 
-		scoped_ptr<io::ZeroCopyOutputStream> output(
-			context.Open(DEFAULT_OUTPUT_NAME));
+				io::Printer printer(output.get(), '$');
+				printer.PrintRaw(s_customTemplateFile.c_str());
+			}
+			// This section copies the scalar table if necessary into
+			// the file.
+			{
+				if(s_includeScalarValueTable)
+				{
+					std::ostringstream os;
+					WriteScalarValueTable(os);
 
-		io::Printer printer(output.get(), '$');
-		printer.PrintRaw(templateOs.str().c_str());
+					scoped_ptr<io::ZeroCopyOutputStream> output(
+						context.OpenForInsert(
+						s_docbookOuputFileName, 
+						SCALAR_TABLE_INSERTION_POINT));
+
+					io::Printer printer(output.get(), '$');
+					printer.PrintRaw(os.str().c_str());
+				}
+			}
+		}
 	}
-}		
+
+	//! @details
+	//! Get the file content into a string buffer.
+	//! 
+	//! @remarks
+	//! Apparently this is one of the fastest method out there.
+	//! http://insanecoding.blogspot.com/2011/11/reading-in-entire-file-at-once-in-c.html
+	std::string GetFileContent(char const *filename)
+	{
+		std::string contents;
+		std::ifstream in(filename, std::ios::in | std::ios::binary);
+		if (in)
+		{
+			in.seekg(0, std::ios::end);
+			contents.resize(in.tellg());
+			in.seekg(0, std::ios::beg);
+			in.read(&contents[0], contents.size());
+			in.close();
+			return(contents);
+		}
+
+		return contents;
+	}
+
+	bool WriteToDocBookFile(
+		std::ostringstream &os, 
+		GeneratorContext *context, 
+		string *error, 
+		string const &fileName)
+	{
+		if(s_customTemplateFileName.empty())
+		{
+			// Everything should be appended below the "insertion point" so that 
+			// all information is written to a single docbook file.
+			scoped_ptr<io::ZeroCopyOutputStream> output(
+				context->OpenForInsert(
+				s_docbookOuputFileName, 
+				DEFAULT_INSERTION_POINT));
+
+			io::Printer printer(output.get(), '$');
+			printer.PrintRaw(os.str().c_str());
+
+			if (printer.failed()) 
+			{
+				*error = "CodeGenerator detected write error.";
+				return false;
+			}
+		}
+		else
+		{
+			scoped_ptr<io::ZeroCopyOutputStream> output(
+				context->OpenForInsert(
+					s_docbookOuputFileName, 
+					fileName));
+
+			io::Printer printer(output.get(), '$');
+			printer.PrintRaw(os.str().c_str());
+
+			if (printer.failed()) 
+			{
+				*error = "CodeGenerator detected write error.";
+				return false;
+			}
+		}
+		return true;
+	}
+} // end anonymous namespace
 
 DocbookGenerator::DocbookGenerator()
 {
@@ -1085,11 +1307,43 @@ DocbookGenerator::DocbookGenerator()
 			s_includeScalarValueTable = true;
 		}
 	}
+
+	// User provides a custom template file.
+	itr = s_docbookOptions.find(OPTION_NAME_CUSTOM_TEMPLATE_FILE);
+	if(itr != s_docbookOptions.end())
+	{
+		// Copy the content in memory, and if successful, consider this
+		// file valid by saving its name.
+		s_customTemplateFile = GetFileContent(itr->second.c_str());
+
+		if(s_customTemplateFile.empty() == false)
+		{
+			s_customTemplateFileName = itr->second;
+			s_docbookOuputFileName = s_customTemplateFileName;
+			int lastindex = s_docbookOuputFileName.find_last_of("."); 
+			s_docbookOuputFileName.insert(lastindex, "-out");
+		}
+	}
+
+	itr = s_docbookOptions.find(OPTION_NAME_STARTING_SECTION_LEVEL);
+	if(itr != s_docbookOptions.end())
+	{
+		std::istringstream buffer(itr->second);
+		buffer >> s_startingSectionLevel;
+
+		if(s_startingSectionLevel <= 0 || 
+			s_startingSectionLevel > MAX_ALLOWED_SECTION_LEVEL_OPTION)
+		{
+			s_startingSectionLevel = 1;
+		}
+	}
 }
 
 DocbookGenerator::~DocbookGenerator() 
 {
 }
+//! @details
+//!
 bool DocbookGenerator::Generate(
 	FileDescriptor const *file,
 	string const &/*parameter*/,
@@ -1098,21 +1352,21 @@ bool DocbookGenerator::Generate(
 {
 	std::ostringstream os;
 
-	WriteProtoFileHeader(os, file);
+	WriteProtoFileHeader(os, file, s_startingSectionLevel);
 
 	// Go through each message defined within the file and write their
 	// information out recursively.
 	for (int i = 0; i < file->message_type_count(); i++) 
 	{
-		WriteMessage(os, file->message_type(i), "", 0);
+		WriteMessage(os, file->message_type(i), "", s_startingSectionLevel);
 	}
 
 	// Write out the Enums defined within the scope of the file. These
 	// enums are not nested within Messages.
-	WriteEnumTable(file, os, "", 2);
+	WriteEnumTable(file, os, "", s_startingSectionLevel+1);
 
 	// Close out the Proto and get ready for the next file.
-	WriteProtoFileFooter(os);
+	WriteProtoFileFooter(os, s_startingSectionLevel);
 
 	if(s_templateFileMade == false) 
 	{
@@ -1120,19 +1374,7 @@ bool DocbookGenerator::Generate(
 		MakeTemplateFile(*context);
 	}
 
-	// Everything should be appended below the "insertion point" so that 
-	// all information is written to a single docbook file.
-	scoped_ptr<io::ZeroCopyOutputStream> output(
-		context->OpenForInsert(DEFAULT_OUTPUT_NAME, DEFAULT_INSERTION_POINT));
-	io::Printer printer(output.get(), '$');
-	printer.PrintRaw(os.str().c_str());
-
-	if (printer.failed()) {
-		*error = "CodeGenerator detected write error.";
-		return false;
-	}
-
-	return true;
+	return WriteToDocBookFile(os, context, error, file->name());
 }
 
 }}}}  // end namespace

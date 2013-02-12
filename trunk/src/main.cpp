@@ -30,12 +30,23 @@
 // Author: askldjd@gmail.com
 
 #include <iostream>
-#include "docbook_generator.h"
 #include <google/protobuf/compiler/plugin.h>
+#include "docbook_generator.h"
+#include "version_info.h"
 
 using namespace google::protobuf::compiler::docbook;
 
 int main(int argc, char* argv[]) {
 	DocbookGenerator dbg;
+
+	if(argc == 2)
+	{
+		std::string arg = argv[1];
+		if(arg == "--v")
+		{
+			std::cout << "version = " << DBK_GENERATOR_VERSION << std::endl;
+			return 0;
+		}
+	}
 	return google::protobuf::compiler::PluginMain(argc, argv, &dbg);
 }
