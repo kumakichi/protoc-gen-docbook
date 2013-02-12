@@ -446,10 +446,10 @@ namespace {
 				defaultStringOs << fd->default_value_enum()->name();
 				break;
 			case FieldDescriptor::TYPE_FIXED32:
-				defaultStringOs << fd->default_value_uint32();
+				defaultStringOs << fd->default_value_int32();
 				break;
 			case FieldDescriptor::TYPE_FIXED64:
-				defaultStringOs << fd->default_value_uint64();
+				defaultStringOs << fd->default_value_int64();
 				break;
 			case FieldDescriptor::TYPE_FLOAT:
 				defaultStringOs << fd->default_value_float();
@@ -461,6 +461,24 @@ namespace {
 				break;
 			case FieldDescriptor::TYPE_INT64:
 				defaultStringOs << fd->default_value_int64();
+				break;
+			case FieldDescriptor::TYPE_SFIXED32:
+				defaultStringOs << fd->default_value_int32();
+				break;
+			case FieldDescriptor::TYPE_SFIXED64:
+				defaultStringOs << fd->default_value_int64();
+				break;
+			case FieldDescriptor::TYPE_SINT32:
+				defaultStringOs << fd->default_value_int32();
+				break;
+			case FieldDescriptor::TYPE_SINT64:
+				defaultStringOs << fd->default_value_int64();
+				break;
+			case FieldDescriptor::TYPE_UINT32:
+				defaultStringOs << fd->default_value_uint32();
+				break;
+			case FieldDescriptor::TYPE_UINT64:
+				defaultStringOs << fd->default_value_uint64();
 				break;
 			default:
 				return "";
