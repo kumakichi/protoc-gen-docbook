@@ -83,7 +83,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).exe .\Test\"
+				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).exe ..\Test\"
 			/>
 		</Configuration>
 		<Configuration
@@ -156,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).exe .\Test\"
+				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).exe ..\Test\"
 			/>
 		</Configuration>
 	</Configurations>
