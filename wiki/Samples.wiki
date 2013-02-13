@@ -28,7 +28,7 @@ Similar to the previous example, this shows a different color scheme of the same
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.proto Proto]
 
 ----
-==Example 3==
+==Sample 3==
 This example comes from a proto file called [http://code.google.com/p/protobuf/source/browse/trunk/src/google/protobuf/descriptor.proto descriptor.proto]. It is used by protoc to describe a .proto file. This example shows a more complex yet realistic output from protoc-gen-docbook.
 
 [http://protoc-gen-docbook.googlecode.com/svn/wiki/images/descriptor_sample_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/descriptor_sample_small.png]
