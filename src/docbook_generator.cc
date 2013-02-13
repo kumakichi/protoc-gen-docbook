@@ -486,7 +486,13 @@ namespace {
 
 			defaultStringOs << " ]";
 		}
-		defaultStringOs << " " << MakePackedString(fd);
+
+		string packedString = MakePackedString(fd);
+
+		if(packedString.empty() == false) 
+		{
+			defaultStringOs << " " << packedString;
+		}
 		return defaultStringOs.str();
 	}
 
