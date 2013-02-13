@@ -46,7 +46,7 @@
 #include <map>
 #include <iomanip>
 // For debugging only
-#include <Windows.h>
+//#include <Windows.h>
 
 namespace google { namespace protobuf { namespace compiler { namespace docbook {
 
