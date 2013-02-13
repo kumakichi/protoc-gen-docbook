@@ -27,7 +27,7 @@ Similar to the previous example, this shows a different color scheme of the same
 
 ----
 
-[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/descriptor_sample_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/descriptor_sample_small.PNG]
+[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/descriptor_sample_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/descriptor_sample_small.png]
 
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/descriptor/descriptor.pdf PDF]
 
