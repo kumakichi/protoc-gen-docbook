@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+	<sect1>
+		<title> person.proto title</title>
+		<para> a long description of person.proto </para>		
+		<!-- @@protoc_insertion_point(person.proto) -->
+	</sect1>
+	<sect1>
+		<title> search_request.proto title</title>
+		<para> a long description of search_request.proto </para>		
+		<!-- @@protoc_insertion_point(search_request.proto) -->
+	</sect1>
+	<sect1>
+		<title> search_response.proto title</title>
+		<para> a long description of search_response.proto </para>		
+		<!-- @@protoc_insertion_point(search_response.proto) -->
+	</sect1>
+	
+	<!-- @@protoc_insertion_point(scalar_table) -->
+</article>
