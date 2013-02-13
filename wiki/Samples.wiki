@@ -1,4 +1,4 @@
 = Sample Output=
 [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/address_book_small.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/address_book_big.PNG] 
 
-[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/demo_ugly.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/demo_ugly_sm.png]
+[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/address_book_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/address_book_small.PNG]
