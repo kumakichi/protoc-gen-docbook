@@ -1,0 +1,1840 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+<sect1><title> File: descriptor.proto</title>
+<sect3><title> Message: FileDescriptorSet</title>
+<para> The protocol compiler can output a FileDescriptorSet containing the .proto
+ files it parses.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_FileDescriptorSet">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>file</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FileDescriptorProto">FileDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: FileDescriptorProto</title>
+<para> Describes a complete .proto file.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_FileDescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para>  file name, relative to root of source tree
+</para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>package</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para>  e.g. &quot;foo&quot;, &quot;foo.bar&quot;, etc.
+</para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>dependency</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> Names of files imported by this file.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>public_dependency</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> Indexes of the public imported files in the dependency list above.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>weak_dependency</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> Indexes of the weak imported files in the dependency list.
+ For Google-internal migration only. Do not use.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>message_type</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_DescriptorProto">DescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> All top-level definitions in this file.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>enum_type</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_EnumDescriptorProto">EnumDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>service</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_ServiceDescriptorProto">ServiceDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>extension</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldDescriptorProto">FieldDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FileOptions">FileOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>source_code_info</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_SourceCodeInfo">SourceCodeInfo</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> This field contains optional information about the original source code.
+ You may safely remove this entire field whithout harming runtime
+ functionality of the descriptors -- the information is needed only by
+ development tools.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: DescriptorProto</title>
+<para> Describes a message type.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_DescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>field</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldDescriptorProto">FieldDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>extension</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldDescriptorProto">FieldDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>nested_type</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_DescriptorProto">DescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>enum_type</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_EnumDescriptorProto">EnumDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>extension_range</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_DescriptorProto_ExtensionRange">ExtensionRange</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_MessageOptions">MessageOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Message: DescriptorProto.ExtensionRange</title>
+
+<informaltable frame="all" xml:id="google_protobuf_DescriptorProto_ExtensionRange">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>start</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>end</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect3><title> Message: FieldDescriptorProto</title>
+<para> Describes a field within a message.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_FieldDescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>number</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>label</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldDescriptorProto_Label">Label</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>type</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldDescriptorProto_Type">Type</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> If type_name is set, this need not be set.  If both this and type_name
+ are set, this must be either TYPE_ENUM or TYPE_MESSAGE.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>type_name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> For message and enum types, this is the name of the type.  If the name
+ starts with a &apos;.&apos;, it is fully-qualified.  Otherwise, C++-like scoping
+ rules are used to find the type (i.e. first the nested types within this
+ message are searched, then within the parent, on up to the root
+ namespace).
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>extendee</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> For extensions, this is the name of the type being extended.  It is
+ resolved in the same manner as type_name.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>default_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> For numeric types, contains the original text representation of the value.
+ For booleans, &quot;true&quot; or &quot;false&quot;.
+ For strings, contains the default text contents (not escaped in any way).
+ For bytes, contains the C escaped value.  All bytes &gt;= 128 are escaped.
+ TODO(kenton):  Base-64 encode?
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldOptions">FieldOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Enum: FieldDescriptorProto.Type</title>
+<para> </para>
+<informaltable frame="all" xml:id="google_protobuf_FieldDescriptorProto_Type">
+<tgroup cols="3">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Element</entry>
+	<entry>Value</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_DOUBLE</entry>
+	<entry>0</entry>
+	<entry><para> 0 is reserved for errors.
+ Order is weird for historical reasons.
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_FLOAT</entry>
+	<entry>1</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_INT64</entry>
+	<entry>2</entry>
+	<entry><para> Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
+ negative values are likely.
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_UINT64</entry>
+	<entry>3</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_INT32</entry>
+	<entry>4</entry>
+	<entry><para> Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
+ negative values are likely.
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_FIXED64</entry>
+	<entry>5</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_FIXED32</entry>
+	<entry>6</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_BOOL</entry>
+	<entry>7</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_STRING</entry>
+	<entry>8</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_GROUP</entry>
+	<entry>9</entry>
+	<entry><para>  Tag-delimited aggregate.
+</para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_MESSAGE</entry>
+	<entry>10</entry>
+	<entry><para>  Length-delimited aggregate.
+</para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_BYTES</entry>
+	<entry>11</entry>
+	<entry><para> New in version 2.
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_UINT32</entry>
+	<entry>12</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_ENUM</entry>
+	<entry>13</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_SFIXED32</entry>
+	<entry>14</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_SFIXED64</entry>
+	<entry>15</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>TYPE_SINT32</entry>
+	<entry>16</entry>
+	<entry><para>  Uses ZigZag encoding.
+</para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>TYPE_SINT64</entry>
+	<entry>17</entry>
+	<entry><para>  Uses ZigZag encoding.
+</para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect4><title> Enum: FieldDescriptorProto.Label</title>
+<para> </para>
+<informaltable frame="all" xml:id="google_protobuf_FieldDescriptorProto_Label">
+<tgroup cols="3">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Element</entry>
+	<entry>Value</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>LABEL_OPTIONAL</entry>
+	<entry>0</entry>
+	<entry><para> 0 is reserved for errors
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>LABEL_REQUIRED</entry>
+	<entry>1</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>LABEL_REPEATED</entry>
+	<entry>2</entry>
+	<entry><para>  TODO(sanjay): Should we add LABEL_MAP?
+</para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect3><title> Message: EnumDescriptorProto</title>
+<para> Describes an enum type.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_EnumDescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>value</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_EnumValueDescriptorProto">EnumValueDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_EnumOptions">EnumOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: EnumValueDescriptorProto</title>
+<para> Describes a value within an enum.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_EnumValueDescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>number</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_EnumValueOptions">EnumValueOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: ServiceDescriptorProto</title>
+<para> Describes a service.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_ServiceDescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>method</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_MethodDescriptorProto">MethodDescriptorProto</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_ServiceOptions">ServiceOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: MethodDescriptorProto</title>
+<para> Describes a method of a service.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_MethodDescriptorProto">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>input_type</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Input and output type names.  These are resolved in the same way as
+ FieldDescriptorProto.type_name, but must refer to a message type.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>output_type</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>options</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_MethodOptions">MethodOptions</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: FileOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_FileOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>java_package</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Sets the Java package where classes generated from this .proto will be
+ placed.  By default, the proto package is used, but this is often
+ inappropriate because proto packages do not normally start with backwards
+ domain names.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>java_outer_classname</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> If set, all the classes from the .proto file are wrapped in a single
+ outer class with the given name.  This applies to both Proto1
+ (equivalent to the old &quot;--one_java_file&quot; option) and Proto2 (where
+ a .proto always translates to a single class, but you may want to
+ explicitly choose the class name).
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>java_multiple_files</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> If set true, then the Java code generator will generate a separate .java
+ file for each top-level message, enum, and service defined in the .proto
+ file.  Thus, these types will *not* be nested inside the outer class
+ named by java_outer_classname.  However, the outer class will still be
+ generated to contain the file&apos;s getDescriptor() method as well as any
+ top-level extensions defined in the file.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>java_generate_equals_and_hash</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> If set true, then the Java code generator will generate equals() and
+ hashCode() methods for all messages defined in the .proto file. This is
+ purely a speed optimization, as the AbstractMessage base class includes
+ reflection-based implementations of these methods.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>optimize_for</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FileOptions_OptimizeMode">OptimizeMode</emphasis></entry>
+	<entry>optional</entry>
+	<entry>
+[default = SPEED ]
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>go_package</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Sets the Go package where structs generated from this .proto will be
+ placed.  There is no default.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>cc_generic_services</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Should generic services be generated in each language?  &quot;Generic&quot; services
+ are not specific to any particular RPC system.  They are generated by the
+ main code generators in each language (without additional plugins).
+ Generic services were the only kind of service generation supported by
+ early versions of proto2.</para>
+<para> Generic services are now considered deprecated in favor of using plugins
+ that generate code specific to your particular RPC system.  Therefore,
+ these default to false.  Old code which depends on generic services should
+ explicitly set them to true.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>java_generic_services</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry>
+[default = false ]
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>py_generic_services</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry>
+[default = false ]
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Enum: FileOptions.OptimizeMode</title>
+<para> Generated classes can be optimized for speed or code size.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_FileOptions_OptimizeMode">
+<tgroup cols="3">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Element</entry>
+	<entry>Value</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>SPEED</entry>
+	<entry>0</entry>
+	<entry><para>  Generate complete code for parsing, serialization,
+</para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>CODE_SIZE</entry>
+	<entry>1</entry>
+	<entry><para> etc.
+  Use ReflectionOps to implement these methods.
+</para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>LITE_RUNTIME</entry>
+	<entry>2</entry>
+	<entry><para>  Generate code using MessageLite and the lite runtime.
+</para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect3><title> Message: MessageOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_MessageOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>message_set_wire_format</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Set true to use the old proto1 MessageSet wire format for extensions.
+ This is provided for backwards-compatibility with the MessageSet wire
+ format.  You should not use this for any other reason:  It&apos;s less
+ efficient, has fewer features, and is more complicated.</para>
+<para> The message must be defined exactly as follows:
+   message Foo {
+     option message_set_wire_format = true;
+     extensions 4 to max;
+   }
+ Note that the message cannot have any defined fields; MessageSets only
+ have extensions.</para>
+<para> All extensions of your type must be singular messages; e.g. they cannot
+ be int32s, enums, or repeated messages.</para>
+<para> Because this is an option, the above two restrictions are not enforced by
+ the protocol compiler.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>no_standard_descriptor_accessor</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Disables the generation of the standard &quot;descriptor()&quot; accessor, which can
+ conflict with a field of the same name.  This is meant to make migration
+ from proto1 easier; new code should avoid fields named &quot;descriptor&quot;.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: FieldOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_FieldOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>ctype</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_FieldOptions_CType">CType</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> The ctype option instructs the C++ code generator to use a different
+ representation of the field than it normally would.  See the specific
+ options below.  This option is not yet implemented in the open source
+ release -- sorry, we&apos;ll try to include it in a future version!
+ </para><para>
+[default = STRING ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>packed</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> The packed option can be enabled for repeated primitive fields to enable
+ a more efficient representation on the wire. Rather than repeatedly
+ writing the tag and type for each element, the entire array is encoded as
+ a single length-delimited blob.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>lazy</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Should this field be parsed lazily?  Lazy applies only to message-type
+ fields.  It means that when the outer message is initially parsed, the
+ inner message&apos;s contents will not be parsed but instead stored in encoded
+ form.  The inner message will actually be parsed when it is first accessed.</para>
+<para> This is only a hint.  Implementations are free to choose whether to use
+ eager or lazy parsing regardless of the value of this option.  However,
+ setting this option true suggests that the protocol author believes that
+ using lazy parsing on this field is worth the additional bookkeeping
+ overhead typically needed to implement it.</para>
+<para> This option does not affect the public interface of any generated code;
+ all method signatures remain the same.  Furthermore, thread-safety of the
+ interface is not affected by this option; const methods remain safe to
+ call from multiple threads concurrently, while non-const methods continue
+ to require exclusive access.</para>
+<para>
+ Note that implementations may choose not to check required fields within
+ a lazy sub-message.  That is, calling IsInitialized() on the outher message
+ may return true even if the inner message has missing required fields.
+ This is necessary because otherwise the inner message would have to be
+ parsed in order to perform the check, defeating the purpose of lazy
+ parsing.  An implementation which chooses not to check required fields
+ must be consistent about it.  That is, for any particular sub-message, the
+ implementation must either *always* check its required fields, or *never*
+ check its required fields, regardless of whether or not the message has
+ been parsed.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>deprecated</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Is this field deprecated?
+ Depending on the target platform, this can emit Deprecated annotations
+ for accessors, or it will be completely ignored; in the very least, this
+ is a formalization for deprecating fields.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>experimental_map_key</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> EXPERIMENTAL.  DO NOT USE.
+ For &quot;map&quot; fields, the name of the field in the enclosed type that
+ is the key for this map.  For example, suppose we have:
+   message Item {
+     required string name = 1;
+     required string value = 2;
+   }
+   message Config {
+     repeated Item items = 1 [experimental_map_key=&quot;name&quot;];
+   }
+ In this situation, the map key for Item will be set to &quot;name&quot;.
+ TODO: Fully-implement this, then remove the &quot;experimental_&quot; prefix.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>weak</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> For Google-internal migration only. Do not use.
+ </para><para>
+[default = false ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Enum: FieldOptions.CType</title>
+<para> </para>
+<informaltable frame="all" xml:id="google_protobuf_FieldOptions_CType">
+<tgroup cols="3">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Element</entry>
+	<entry>Value</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>STRING</entry>
+	<entry>0</entry>
+	<entry><para> Default mode.
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>CORD</entry>
+	<entry>1</entry>
+	<entry></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>STRING_PIECE</entry>
+	<entry>2</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect3><title> Message: EnumOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_EnumOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>allow_alias</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> Set this option to false to disallow mapping different tag names to a same
+ value.
+ </para><para>
+[default = true ]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: EnumValueOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_EnumValueOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: ServiceOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_ServiceOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: MethodOptions</title>
+
+<informaltable frame="all" xml:id="google_protobuf_MethodOptions">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>uninterpreted_option</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption">UninterpretedOption</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The parser stores options it doesn&apos;t recognize here. See above.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect3><title> Message: UninterpretedOption</title>
+<para> A message representing a option the parser does not recognize. This only
+ appears in options protos created by the compiler::Parser class.
+ DescriptorPool resolves these when building Descriptor objects. Therefore,
+ options protos in descriptor objects (e.g. returned by Descriptor::options(),
+ or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
+ in them.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_UninterpretedOption">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_UninterpretedOption_NamePart">NamePart</emphasis></entry>
+	<entry>repeated</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>identifier_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> The value of the uninterpreted option, in whatever type the tokenizer
+ identified it as during parsing. Exactly one of these should be set.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>positive_int_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">uint64</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>negative_int_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int64</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>double_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">double</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>string_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bytes</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>aggregate_value</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Message: UninterpretedOption.NamePart</title>
+<para> The name of the uninterpreted option.  Each string represents a segment in
+ a dot-separated name.  is_extension is true iff a segment represents an
+ extension (denoted with parentheses in options specs in .proto files).
+ E.g.,{ [&quot;foo&quot;, false], [&quot;bar.baz&quot;, true], [&quot;qux&quot;, false] } represents
+ &quot;foo.(bar.baz).qux&quot;.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_UninterpretedOption_NamePart">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name_part</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>required</entry>
+	<entry></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>is_extension</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">bool</emphasis></entry>
+	<entry>required</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect3><title> Message: SourceCodeInfo</title>
+<para> Encapsulates information about the original source file from which a
+ FileDescriptorProto was generated.
+ </para>
+<informaltable frame="all" xml:id="google_protobuf_SourceCodeInfo">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>location</entry>
+	<entry><emphasis role="underline" xlink:href="#google_protobuf_SourceCodeInfo_Location">Location</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> A Location identifies a piece of source code in a .proto file which
+ corresponds to a particular definition.  This information is intended
+ to be useful to IDEs, code indexers, documentation generators, and similar
+ tools.</para>
+<para> For example, say we have a file like:
+   message Foo {
+     optional string foo = 1;
+   }
+ Let&apos;s look at just the field definition:
+   optional string foo = 1;
+   ^       ^^     ^^  ^  ^^^
+   a       bc     de  f  ghi
+ We have the following locations:
+   span   path               represents
+   [a,i)  [ 4, 0, 2, 0 ]     The whole field definition.
+   [a,b)  [ 4, 0, 2, 0, 4 ]  The label (optional).
+   [c,d)  [ 4, 0, 2, 0, 5 ]  The type (string).
+   [e,f)  [ 4, 0, 2, 0, 1 ]  The name (foo).
+   [g,h)  [ 4, 0, 2, 0, 3 ]  The number (1).</para>
+<para> Notes:
+ - A location may refer to a repeated field itself (i.e. not to any
+   particular index within it).  This is used whenever a set of elements are
+   logically enclosed in a single code segment.  For example, an entire
+   extend block (possibly containing multiple extension definitions) will
+   have an outer location whose path refers to the &quot;extensions&quot; repeated
+   field without an index.
+ - Multiple locations may have the same path.  This happens when a single
+   logical declaration is spread out across multiple places.  The most
+   obvious example is the &quot;extend&quot; block again -- there may be multiple
+   extend blocks in the same scope, each of which will have the same path.
+ - A location&apos;s span is not always a subset of its parent&apos;s span.  For
+   example, the &quot;extendee&quot; of an extension declaration appears at the
+   beginning of the &quot;extend&quot; block and is shared by all extensions within
+   the block.
+ - Just because a location&apos;s span is a subset of some other location&apos;s span
+   does not mean that it is a descendent.  For example, a &quot;group&quot; defines
+   both a type and a field in a single declaration.  Thus, the locations
+   corresponding to the type and field and their components will overlap.
+ - Code which tries to interpret locations should probably be designed to
+   ignore those that it doesn&apos;t understand, as more types of locations could
+   be recorded in the future.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Message: SourceCodeInfo.Location</title>
+
+<informaltable frame="all" xml:id="google_protobuf_SourceCodeInfo_Location">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>path</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> Identifies which part of the FileDescriptorProto was defined at this
+ location.</para>
+<para> Each element is a field number or an index.  They form a path from
+ the root FileDescriptorProto to the place where the definition.  For
+ example, this path:
+   [ 4, 3, 2, 7, 1 ]
+ refers to:
+   file.message_type(3)  // 4, 3
+       .field(7)         // 2, 7
+       .name()           // 1
+ This is because FileDescriptorProto.message_type has field number 4:
+   repeated DescriptorProto message_type = 4;
+ and DescriptorProto.field has field number 2:
+   repeated FieldDescriptorProto field = 2;
+ and FieldDescriptorProto.name has field number 1:
+   optional string name = 1;</para>
+<para> Thus, the above path gives the location of a field name.  If we removed
+ the last element:
+   [ 4, 3, 2, 7 ]
+ this path refers to the whole field declaration (from the beginning
+ of the label to the terminating semicolon).
+ </para><para> [packed = true]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>span</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int32</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> Always has exactly three or four elements: start line, start column,
+ end line (optional, otherwise assumed same as start line), end column.
+ These are packed into a single field for efficiency.  Note that line
+ and column numbers are zero-based -- typically you will want to add
+ 1 to each before displaying to a user.
+ </para><para> [packed = true]</para>
+</entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>leading_comments</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> If this SourceCodeInfo represents a complete declaration, these are any
+ comments appearing before and after the declaration which appear to be
+ attached to the declaration.</para>
+<para> A series of line comments appearing on consecutive lines, with no other
+ tokens appearing on those lines, will be treated as a single comment.</para>
+<para> Only the comment content is provided; comment markers (e.g. //) are
+ stripped out.  For block comments, leading whitespace and an asterisk
+ will be stripped from the beginning of each line other than the first.
+ Newlines are included in the output.</para>
+<para> Examples:</para>
+<para>   optional int32 foo = 1;  // Comment attached to foo.
+   // Comment attached to bar.
+   optional int32 bar = 2;</para>
+<para>   optional string baz = 3;
+   // Comment attached to baz.
+   // Another line attached to baz.</para>
+<para>   // Comment attached to qux.
+   //
+   // Another line attached to qux.
+   optional double qux = 4;</para>
+<para>   optional string corge = 5;
+   /* Block comment attached
+    * to corge.  Leading asterisks
+    * will be removed. */
+   /* Block comment attached to
+    * grault. */
+   optional int32 grault = 6;
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>trailing_comments</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+</sect1>
+<!-- @@protoc_insertion_point(insertion_point) -->
+<sect1><title>Scalar Value Types</title>
+<para> A scalar message field can have one of the following types - the table shows the type specified in the .proto file, and the corresponding type in the automatically generated class: </para>
+<informaltable frame="all" xml:id="protobuf_scalar_value_types">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="2*"/>
+ <colspec colname="c2" colnum="2" colwidth="6*"/>
+ <colspec colname="c3" colnum="3" colwidth="2*"/>
+ <colspec colname="c4" colnum="4" colwidth="2*"/>
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+<entry>Type</entry>
+<entry>Notes</entry>
+<entry>C++ Type</entry>
+<entry>Java Type</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>double</entry>
+<entry></entry>
+<entry>double</entry>
+<entry>double</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>float</entry>
+<entry></entry>
+<entry>float</entry>
+<entry>float</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>int32</entry>
+<entry>Uses variable-length encoding. Inefficient for encoding 					negative numbers - if your field is likely to have negative 					values, use sint32 instead.</entry>
+<entry>int32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>int64</entry>
+<entry>Uses variable-length encoding. Inefficient for encoding 					negative numbers - if your field is likely to have negative 					values, use sint64 instead.</entry>
+<entry>int64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>uint32</entry>
+<entry>Uses variable-length encoding.</entry>
+<entry>uint32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>uint64</entry>
+<entry>	Uses variable-length encoding.</entry>
+<entry>uint64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>sint32</entry>
+<entry>Uses variable-length encoding. Signed int value. These 					more efficiently encode negative numbers than regular int32s.</entry>
+<entry>int32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>sint64</entry>
+<entry>Uses variable-length encoding. Signed int value. These more					efficiently encode negative numbers than regular int64s.</entry>
+<entry>int64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>fixed32</entry>
+<entry>Always four bytes. More efficient than uint32 if values are 					often greater than 2^28.</entry>
+<entry>uint32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>fixed64</entry>
+<entry>Always eight bytes. More efficient than uint64 if values 					are often greater than 2^56.</entry>
+<entry>uint64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>sfixed32</entry>
+<entry>Always four bytes..</entry>
+<entry>int32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>sfixed64</entry>
+<entry>Always eight bytes.</entry>
+<entry>int64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>bool</entry>
+<entry></entry>
+<entry>bool</entry>
+<entry>boolean</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>string</entry>
+<entry>	A string must always contain UTF-8 encoded or 7-bit ASCII text.</entry>
+<entry>string</entry>
+<entry>String</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>bytes</entry>
+<entry>May contain any arbitrary sequence of bytes.</entry>
+<entry>string</entry>
+<entry>ByteString</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+</article>
