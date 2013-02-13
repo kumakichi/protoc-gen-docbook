@@ -1,3 +1,9 @@
 = Sample Output=
 
 [http://protoc-gen-docbook.googlecode.com/svn/wiki/images/addressbook_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/addressbook_small.PNG]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.pdf PDF]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.xml DocBook]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.proto Proto]
