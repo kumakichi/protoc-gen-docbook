@@ -1,9 +1,21 @@
 = Sample Output=
 
+This sample converts a basic proto file called _addressbook.proto_ into DocBook and PDF.
+
 [http://protoc-gen-docbook.googlecode.com/svn/wiki/images/addressbook_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/addressbook_small.PNG]
 
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.pdf PDF]
 
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.xml DocBook]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.proto Proto]
+
+Similar to the previous example, this shows a different color scheme of the same output. The color scheme is fully configurable in protoc-gen-docbook through the _docbook.properties_ file.
+
+[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/addressbook_theme_big.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/images/addressbook_theme_small.PNG]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook_green.pdf PDF]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook_green.xml DocBook]
 
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/addressbook.proto Proto]
