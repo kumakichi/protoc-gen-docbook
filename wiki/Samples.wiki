@@ -1,3 +1,4 @@
+#summary Output samples from protoc-gen-docbook
 #labels Samples
 = Sample Output=
 
