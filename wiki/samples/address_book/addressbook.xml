@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+<sect1><title> File: addressbook.proto</title>
+<sect3><title> Message: Person</title>
+<para> This message describes the personal contact information of a person in
+ the database. The person contact information includes names, emails and
+ other various contact information.
+ </para>
+<informaltable frame="all" xml:id="tutorial_Person">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>name</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>required</entry>
+	<entry><para> This field describes the full name of the person. It should be in
+ lastname/firstname format, and may or may not be unique.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>id</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">int64</emphasis></entry>
+	<entry>required</entry>
+	<entry><para> This field describes the unique ID number for this person. 
+  Seriously, this field must be globally unique, otherwise horrible things will happen.
+</para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>email</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> This field describes the email address of this person. If this person 
+ does not have a email addres, omit it.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>phone</entry>
+	<entry><emphasis role="underline" xlink:href="#tutorial_Person_PhoneNumber">PhoneNumber</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> Nowadays, a person may have more than one phone. So this field allows for 0-n 
+ number of phones.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+<sect4><title> Enum: Person.PhoneType</title>
+<para> This enumeration describes the different type of phone number for this
+ person.
+ </para>
+<informaltable frame="all" xml:id="tutorial_Person_PhoneType">
+<tgroup cols="3">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Element</entry>
+	<entry>Value</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>MOBILE</entry>
+	<entry>0</entry>
+	<entry><para> Mobile cell phone type
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>HOME</entry>
+	<entry>1</entry>
+	<entry><para> Home phone type
+ </para></entry>
+</row>
+
+<row>
+<?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>WORK</entry>
+	<entry>2</entry>
+	<entry><para> Work phone type
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect4><title> Message: Person.PhoneNumber</title>
+<para> This message describes the phone number of a person.
+ </para>
+<informaltable frame="all" xml:id="tutorial_Person_PhoneNumber">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>number</entry>
+	<entry><emphasis role="underline" xlink:href="#protobuf_scalar_value_types">string</emphasis></entry>
+	<entry>required</entry>
+	<entry><para> The number is required, and should be in (area code)-number format.
+ </para></entry>
+</row>
+
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+	<entry>type</entry>
+	<entry><emphasis role="underline" xlink:href="#tutorial_Person_PhoneType">PhoneType</emphasis></entry>
+	<entry>optional</entry>
+	<entry><para> The type of this phone number. By default, pretend this is a home phone number.
+ </para><para>
+[default = HOME ]</para>
+</entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect4>
+<sect3><title> Message: AddressBook</title>
+<para> Our address book file is just one of these.
+ </para>
+<informaltable frame="all" xml:id="tutorial_AddressBook">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="3*" />
+<colspec colname="c2" colnum="2" colwidth="2*" />
+<colspec colname="c3" colnum="3" colwidth="2*" />
+<colspec colname="c4" colnum="4" colwidth="6*" />
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+	<entry>Field</entry>
+	<entry>Type</entry>
+	<entry>Rule</entry>
+	<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+	<entry>person</entry>
+	<entry><emphasis role="underline" xlink:href="#tutorial_Person">Person</emphasis></entry>
+	<entry>repeated</entry>
+	<entry><para> The person list in the address book.
+ </para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+</sect3>
+</sect1>
+<!-- @@protoc_insertion_point(insertion_point) -->
+<sect1><title>Scalar Value Types</title>
+<para> A scalar message field can have one of the following types - the table shows the type specified in the .proto file, and the corresponding type in the automatically generated class: </para>
+<informaltable frame="all" xml:id="protobuf_scalar_value_types">
+<tgroup cols="4">
+ <colspec colname="c1" colnum="1" colwidth="2*"/>
+ <colspec colname="c2" colnum="2" colwidth="6*"/>
+ <colspec colname="c3" colnum="3" colwidth="2*"/>
+ <colspec colname="c4" colnum="4" colwidth="2*"/>
+<thead>
+<row>
+<?dbhtml bgcolor="#A6B4C4" ?>
+<?dbfo bgcolor="#A6B4C4" ?>
+<entry>Type</entry>
+<entry>Notes</entry>
+<entry>C++ Type</entry>
+<entry>Java Type</entry>
+</row>
+</thead>
+<tbody>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>double</entry>
+<entry></entry>
+<entry>double</entry>
+<entry>double</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>float</entry>
+<entry></entry>
+<entry>float</entry>
+<entry>float</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>int32</entry>
+<entry>Uses variable-length encoding. Inefficient for encoding 					negative numbers - if your field is likely to have negative 					values, use sint32 instead.</entry>
+<entry>int32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>int64</entry>
+<entry>Uses variable-length encoding. Inefficient for encoding 					negative numbers - if your field is likely to have negative 					values, use sint64 instead.</entry>
+<entry>int64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>uint32</entry>
+<entry>Uses variable-length encoding.</entry>
+<entry>uint32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>uint64</entry>
+<entry>	Uses variable-length encoding.</entry>
+<entry>uint64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>sint32</entry>
+<entry>Uses variable-length encoding. Signed int value. These 					more efficiently encode negative numbers than regular int32s.</entry>
+<entry>int32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>sint64</entry>
+<entry>Uses variable-length encoding. Signed int value. These more					efficiently encode negative numbers than regular int64s.</entry>
+<entry>int64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>fixed32</entry>
+<entry>Always four bytes. More efficient than uint32 if values are 					often greater than 2^28.</entry>
+<entry>uint32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>fixed64</entry>
+<entry>Always eight bytes. More efficient than uint64 if values 					are often greater than 2^56.</entry>
+<entry>uint64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>sfixed32</entry>
+<entry>Always four bytes..</entry>
+<entry>int32</entry>
+<entry>int</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>sfixed64</entry>
+<entry>Always eight bytes.</entry>
+<entry>int64</entry>
+<entry>long</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>bool</entry>
+<entry></entry>
+<entry>bool</entry>
+<entry>boolean</entry>
+</row>
+<row><?dbhtml bgcolor="#f0f0f0" ?>
+<?dbfo bgcolor="#f0f0f0" ?>
+<entry>string</entry>
+<entry>	A string must always contain UTF-8 encoded or 7-bit ASCII text.</entry>
+<entry>string</entry>
+<entry>String</entry>
+</row>
+<row><?dbhtml bgcolor="#ffffff" ?>
+<?dbfo bgcolor="#ffffff" ?>
+<entry>bytes</entry>
+<entry>May contain any arbitrary sequence of bytes.</entry>
+<entry>string</entry>
+<entry>ByteString</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+</article>
