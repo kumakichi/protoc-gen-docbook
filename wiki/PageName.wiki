@@ -1,4 +1,0 @@
-#summary One-sentence summary of this page.
-
-= Sample Output=
-[http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/address_book_small.PNG http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/address_book/address_book_big.PNG ] 
