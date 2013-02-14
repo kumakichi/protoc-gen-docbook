@@ -3,7 +3,11 @@
 
 = Developer Details =
 
-*protoc-gen-docbook* is written in C++, and is a process-based plugin used by the Protobuf Compiler (protoc).
+This page provides internal information that may be of interest for developers.
+
+== From protoc to protoc-gen-docbook==
+
+*protoc-gen-docbook* is a C++ process-based plugin used by the Protobuf Compiler (protoc).
 The plugin architecture, which is well defined within protoc, allows it to load external process for additional language generation support.
 
 Here is the developer oriented documentation in [https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb plugin.pb.h]
@@ -19,4 +23,86 @@ If protoc-gen-docbook is in the same path as protoc, it will be loaded automatic
 
 {{{
 protoc --docbook_out=. --proto_path=$your_proto_path $your_proto_file
+}}}
+
+== Transform into DocBook ==
+
+The transformation process into DocBook is fairly straight forward. Since .proto are basically composed of files, message, and fields, the structure maps well into DocBook [http://oreilly.com/catalog/docbook/book2/informaltable.html informaltable]
+
+Here is a sample protobuf message:
+{{{
+message Person {
+
+  // This field describes the full name of the person. It should be in
+  // lastname/firstname format, and may or may not be unique.
+  required string name = 1; 
+
+  // This field describes the unique ID number for this person. 
+  required int64 id = 2;
+
+  // This field describes the email address of this person. If this person 
+  // does not have a email addres, omit it.
+  optional string email = 3;
+}
+}}}
+
+The result DocBook will be map to:
+
+{{{
+<informaltable frame="all" xml:id="tutorial_Person">
+  <tgroup cols="4">
+    <colspec colname="c1" colnum="1" colwidth="3*" />
+    <colspec colname="c2" colnum="2" colwidth="2*" />
+    <colspec colname="c3" colnum="3" colwidth="2*" />
+    <colspec colname="c4" colnum="4" colwidth="6*" />
+      <thead>
+        <row>
+          <?dbhtml bgcolor="#A6B4C4" ?>
+          <?dbfo bgcolor="#A6B4C4" ?>
+          <entry>Field</entry>
+          <entry>Type</entry>
+          <entry>Rule</entry>
+          <entry>Description</entry>
+        </row>
+      </thead>      
+      <tbody>
+        <row>
+          <?dbhtml bgcolor="#ffffff" ?>
+          <?dbfo bgcolor="#ffffff" ?>
+          <entry>name</entry>
+          <entry><emphasis role="underline" 
+			xlink:href="#protobuf_scalar_value_types">string</emphasis>
+		  </entry>
+          <entry>required</entry>
+          <entry>
+            <para> a person&apos;s name, required btw, must be awesome
+          </para>
+          </entry>
+        </row>
+
+        <row>
+          <?dbhtml bgcolor="#f0f0f0" ?>
+          <?dbfo bgcolor="#f0f0f0" ?>
+          <entry>id</entry>
+          <entry><emphasis role="underline" 
+            link:href="#protobuf_scalar_value_types">int32</emphasis>
+		  </entry>
+          <entry>required</entry>
+          <entry>
+            <para>  Unique ID number for this person.</para>
+          </entry>
+        </row>
+        <row>
+          <?dbhtml bgcolor="#ffffff" ?>
+          <?dbfo bgcolor="#ffffff" ?>
+          <entry>email</entry>
+          <entry><emphasis role="underline" x
+			link:href="#protobuf_scalar_value_types">string</emphasis>
+		  </entry>
+          <entry>optional</entry>
+          <entry></entry>
+        </row>
+    </tbody>
+  </tgroup>
+</informaltable>
 }}}
