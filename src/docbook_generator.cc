@@ -237,6 +237,124 @@ namespace {
 	//! The starting <sect> used for the generated table.
 	int s_startingSectionLevel = 1;
 
+	int const NUM_TYPE = 15;
+	int const NUM_COLUMN = 4;
+
+	char const * s_scalarTable[NUM_TYPE][NUM_COLUMN] = {
+		{
+			"double", 
+				"", 
+				"double", 
+				"double"
+		} 
+		, 
+		{
+			"float", 
+				"", 
+				"float", 
+				"float"
+		} 
+		, 	
+		{
+			"int32", 
+				"Uses variable-length encoding. Inefficient for encoding \
+				negative numbers - if your field is likely to have negative \
+				values, use sint32 instead.", 
+				"int32", 
+				"int"
+		} 
+		, 	
+		{
+			"int64", 
+				"Uses variable-length encoding. Inefficient for encoding \
+				negative numbers - if your field is likely to have negative \
+				values, use sint64 instead.", 
+				"int64", 
+				"long"
+		} 
+		, 	
+		{
+			"uint32", 
+				"Uses variable-length encoding.", 
+				"uint32", 
+				"int"
+		} 
+		, 	
+		{
+			"uint64", 
+				"	Uses variable-length encoding.", 
+				"uint64", 
+				"long"
+		} 
+		, 	
+		{
+			"sint32", 
+				"Uses variable-length encoding. Signed int value. These \
+				more efficiently encode negative numbers than regular int32s.", 
+				"int32", 
+				"int"
+		} 
+		, 	
+		{
+			"sint64", 
+				"Uses variable-length encoding. Signed int value. These more\
+				efficiently encode negative numbers than regular int64s.", 
+				"int64", 
+				"long"
+		} 
+		, 	
+		{
+			"fixed32", 
+				"Always four bytes. More efficient than uint32 if values are \
+				often greater than 2^28.", 
+				"uint32", 
+				"int"
+		} 
+		, 	
+		{
+			"fixed64", 
+				"Always eight bytes. More efficient than uint64 if values \
+				are often greater than 2^56.", 
+				"uint64", 
+				"long"
+		} 
+		, 	
+		{
+			"sfixed32", 
+				"Always four bytes..", 
+				"int32", 
+				"int"
+		} 
+		, 	
+		{
+			"sfixed64", 
+				"Always eight bytes.", 
+				"int64", 
+				"long"
+		} 
+		, 	
+		{
+			"bool", 
+				"", 
+				"bool", 
+				"boolean"
+		} 
+		, 	
+		{
+			"string", 
+				"	A string must always contain UTF-8 encoded or 7-bit ASCII text.", 
+				"string", 
+				"String"
+		} 
+		, 	
+		{
+			"bytes", 
+				"May contain any arbitrary sequence of bytes.", 
+				"string", 
+				"ByteString"
+		} 
+	};
+
 	//! @details
 	//! Clean up the comment string for any special characters
 	//! to ensure it is acceptable in XML format.
@@ -998,126 +1116,12 @@ namespace {
 	//! see https://developers.google.com/protocol-buffers/docs/proto
 	void WriteScalarValueTable(std::ostringstream &os)
 	{
-		const int NUM_TYPE = 15;
-		const int NUM_COLUMN = 4;
-		char* table[NUM_TYPE][NUM_COLUMN] = {
-			{
-				"double", 
-					"", 
-					"double", 
-					"double"
-			} 
-			, 
-			{
-				"float", 
-					"", 
-					"float", 
-					"float"
-			} 
-			, 	
-			{
-				"int32", 
-					"Uses variable-length encoding. Inefficient for encoding \
-					negative numbers - if your field is likely to have negative \
-					values, use sint32 instead.", 
-					"int32", 
-					"int"
-			} 
-			, 	
-			{
-				"int64", 
-					"Uses variable-length encoding. Inefficient for encoding \
-					negative numbers - if your field is likely to have negative \
-					values, use sint64 instead.", 
-					"int64", 
-					"long"
-			} 
-			, 	
-			{
-				"uint32", 
-					"Uses variable-length encoding.", 
-					"uint32", 
-					"int"
-			} 
-			, 	
-			{
-				"uint64", 
-					"	Uses variable-length encoding.", 
-					"uint64", 
-					"long"
-			} 
-			, 	
-			{
-				"sint32", 
-					"Uses variable-length encoding. Signed int value. These \
-					more efficiently encode negative numbers than regular int32s.", 
-					"int32", 
-					"int"
-			} 
-			, 	
-			{
-				"sint64", 
-					"Uses variable-length encoding. Signed int value. These more\
-					efficiently encode negative numbers than regular int64s.", 
-					"int64", 
-					"long"
-			} 
-			, 	
-			{
-				"fixed32", 
-					"Always four bytes. More efficient than uint32 if values are \
-					often greater than 2^28.", 
-					"uint32", 
-					"int"
-			} 
-			, 	
-			{
-				"fixed64", 
-					"Always eight bytes. More efficient than uint64 if values \
-					are often greater than 2^56.", 
-					"uint64", 
-					"long"
-			} 
-			, 	
-			{
-				"sfixed32", 
-					"Always four bytes..", 
-					"int32", 
-					"int"
-			} 
-			, 	
-			{
-				"sfixed64", 
-					"Always eight bytes.", 
-					"int64", 
-					"long"
-			} 
-			, 	
-			{
-				"bool", 
-					"", 
-					"bool", 
-					"boolean"
-			} 
-			, 	
-			{
-				"string", 
-					"	A string must always contain UTF-8 encoded or 7-bit ASCII text.", 
-					"string", 
-					"String"
-			} 
-			, 	
-			{
-				"bytes", 
-					"May contain any arbitrary sequence of bytes.", 
-					"string", 
-					"ByteString"
-			} 
-		};
 		os 
 			<< "<sect1>"
 			<< "<title>Scalar Value Types</title>" << std::endl
-			<< "<para> A scalar message field can have one of the following types - the table shows the type specified in the .proto file, and the corresponding type in the automatically generated class: </para>" << std::endl
+			<< "<para> A scalar message field can have one of the following types - \
+			   the table shows the type specified in the .proto file, and the \
+			   corresponding type in the automatically generated class: </para>" << std::endl
 			<< "<informaltable frame=\"all\""
 			<< " xml:id=\"" << SCALAR_VALUE_TYPES_TABLE_XML_ID << "\">" << std::endl
 			<< "<tgroup cols=\"4\">" << std::endl
@@ -1156,7 +1160,7 @@ namespace {
 				<< "<?dbfo bgcolor=\"#" <<cellcolor << "\" ?>" << std::endl;
 			for(j=0; j<NUM_COLUMN; ++j)
 			{
-				os << "<entry>" << table[i][j] << "</entry>" << std::endl;
+				os << "<entry>" << s_scalarTable[i][j] << "</entry>" << std::endl;
 			}
 			os<< "</row>" << std::endl;
 		}
