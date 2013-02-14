@@ -5,6 +5,13 @@
 
 This page provides internal information that may be of interest for developers.
 
+
+== The Big Picture ==
+
+Here's an overview of how all the pieces of this project link together.
+
+[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/big_picture_big.png http://protoc-gen-docbook.googlecode.com/svn/wiki/images/big_picture_small.png]
+
 == From protoc to protoc-gen-docbook==
 
 *protoc-gen-docbook* is a C++ process-based plugin used by the Protobuf Compiler (protoc).
