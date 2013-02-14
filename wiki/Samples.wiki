@@ -38,3 +38,15 @@ This example comes from a proto file called [http://code.google.com/p/protobuf/s
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/descriptor/descriptor.xml DocBook]
 
  * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/descriptor/descriptor.proto Proto]
+
+----
+==Sample 4==
+This example shows that protoc-gen-docbook can insert proto tables directly into existing DocBook documents. This is useful if you already have existing technical publication in DocBook and would like to enhance the document with protoc-gen-docbook.
+
+[http://protoc-gen-docbook.googlecode.com/svn/wiki/images/custom_template_big.png http://protoc-gen-docbook.googlecode.com/svn/wiki/images/custom_template_sm.png]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/custom_template/custom_template.pdf PDF]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples//custom_template/custom_template_docbook.zip DocBook]
+
+ * [http://protoc-gen-docbook.googlecode.com/svn/wiki/samples/custom_template/custom_template_proto.zip Proto]
