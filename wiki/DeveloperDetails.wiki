@@ -25,7 +25,9 @@ If protoc-gen-docbook is in the same path as protoc, it will be loaded automatic
 protoc --docbook_out=. --proto_path=$your_proto_path $your_proto_file
 }}}
 
-== Transform into DocBook ==
+----
+
+== Transforming into DocBook ==
 
 The transformation process into DocBook is fairly straight forward. Since .proto are basically composed of files, message, and fields, the structure maps well into DocBook [http://oreilly.com/catalog/docbook/book2/informaltable.html informaltable]
 
@@ -105,4 +107,22 @@ The result DocBook will be map to:
     </tbody>
   </tgroup>
 </informaltable>
+}}}
+
+----
+
+== DocBook Into PDF==
+
+The transformation from DocBook into PDF is done through Apache FOP with DocBook stylesheets. Apache FOP (Apache 2.0 License), and DocBook stylesheets (MIT-like license) are both freely available.
+
+With these powerful tools, transforming DocBook into PDF is simply a command away.
+
+Here's the Windows version of transformation command.
+{{{
+cmd /c %fop_path%\fop.bat ^
+-xml %docbook_input% ^
+-xsl %fop_path%\docbook-xsl-1.78.0\fo\docbook.xsl ^
+-pdf %pdf_output% ^
+-param page.orientation landscape ^
+-param paper.type USletter
 }}}
