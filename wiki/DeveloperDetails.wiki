@@ -1,0 +1,22 @@
+#summary The internal details that may be of interest for developers.
+#labels Phase-Implementation
+
+= Developer Details =
+
+*protoc-gen-docbook* is written in C++, and is a process-based plugin used by the Protobuf Compiler (protoc).
+The plugin architecture, which is well defined within protoc, allows it to load external process for additional language generation support.
+
+Here is the developer oriented documentation in [https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb plugin.pb.h]
+{{{
+// A plugin executable needs only to be placed somewhere in the path.  The
+// plugin should be named "protoc-gen-$NAME", and will then be used when the
+// flag "--${NAME}_out" is passed to protoc.
+}}}
+
+Therefore, protoc-gen-docbook relies on entirely on protoc to parse the input .proto source file. The parse results are then encoded in protobuf and be passed into protoc-gen-docbook through _stdin_. This information is called the *descriptor*. protoc-gen-docbook handles the descriptor information, and generates DocBook output.
+
+If protoc-gen-docbook is in the same path as protoc, it will be loaded automatically through the following command.
+
+{{{
+protoc --docbook_out=. --proto_path=$your_proto_path $your_proto_file
+}}}
