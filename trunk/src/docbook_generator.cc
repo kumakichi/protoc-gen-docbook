@@ -237,10 +237,13 @@ namespace {
 	//! The starting <sect> used for the generated table.
 	int s_startingSectionLevel = 1;
 
-	int const NUM_TYPE = 15;
-	int const NUM_COLUMN = 4;
+	int const NUM_SCALAR_TABLE_TYPE = 15;
+	int const NUM_SCALAR_TABLE_COLUMN = 4;
 
-	char const * s_scalarTable[NUM_TYPE][NUM_COLUMN] = {
+	//! @details
+	//! Giant table used for the Scalar Type Table. This information is
+	//! copied directly from protobuf guide.
+	char const * s_scalarTable[NUM_SCALAR_TABLE_TYPE][NUM_SCALAR_TABLE_COLUMN] = {
 		{
 			"double", 
 				"", 
@@ -1147,7 +1150,7 @@ namespace {
 
 		int i=0;
 		int j=0;
-		for(i=0; i<NUM_TYPE; ++i)
+		for(i=0; i<NUM_SCALAR_TABLE_TYPE; ++i)
 		{
 			string cellcolor = s_rowColor;
 			if(i%2 == 1)
@@ -1158,7 +1161,7 @@ namespace {
 				<< "<row>"
 				<< "<?dbhtml bgcolor=\"#" <<cellcolor << "\" ?>" << std::endl
 				<< "<?dbfo bgcolor=\"#" <<cellcolor << "\" ?>" << std::endl;
-			for(j=0; j<NUM_COLUMN; ++j)
+			for(j=0; j<NUM_SCALAR_TABLE_COLUMN; ++j)
 			{
 				os << "<entry>" << s_scalarTable[i][j] << "</entry>" << std::endl;
 			}
@@ -1385,7 +1388,22 @@ DocbookGenerator::DocbookGenerator()
 DocbookGenerator::~DocbookGenerator() 
 {
 }
+
 //! @details
+//! This is the main entry point for this plugin. For each file parsed by 
+//! protoc, it will forward the .proto parsed tree into FileDescriptor
+//! format. DocbookGenerator will then traverse the information and generate
+//! the equivalent DocBook output.
+//!
+//! @param [in] file
+//! The parsed information in FileDescriptor form.
+//!
+//! @param [in] context
+//! The context object is used to concat DocBook stream into the target file.
+//! This is part of the protoc framework.
+//!
+//! @param [in] error
+//! String for any error that has occurred.
 //!
 bool DocbookGenerator::Generate(
 	FileDescriptor const *file,
