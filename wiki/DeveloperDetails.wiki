@@ -3,7 +3,7 @@
 
 = Developer Details =
 
-This page provides internal information that may be of interest for developers.
+This page provides some internal information that may be of interest for developers.
 
 
 == The Big Picture ==
