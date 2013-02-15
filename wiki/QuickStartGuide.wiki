@@ -1,4 +1,4 @@
-#summary The Quick Start Guide for first time users
+#summary The quick start guide for first time users
 
 = Quick Start Guide =
 
