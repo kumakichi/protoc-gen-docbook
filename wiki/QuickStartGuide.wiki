@@ -4,6 +4,8 @@
 
 This tutorial will try to get *protoc-gen-docbook* up and running on your machine with as few steps as possible.
 
+*This tutorial is for Windows user only. Tutorial on other OS's are in progress (issue 1).
+
 == Before we start ==
 Download the latest release from the [http://code.google.com/p/protoc-gen-docbook/downloads/list Download] page. You want the *Full Release* since it comes with everything you need.
 
