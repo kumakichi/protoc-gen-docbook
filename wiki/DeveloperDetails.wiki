@@ -12,25 +12,29 @@ Here's an overview of how all the pieces of this project link together.
 
 [http://protoc-gen-docbook.googlecode.com/svn/wiki/images/big_picture_big.png http://protoc-gen-docbook.googlecode.com/svn/wiki/images/big_picture_small.png]
 
-== From protoc to protoc-gen-docbook==
+== From _protoc_ to _protoc-gen-docbook_==
 
-*protoc-gen-docbook* is a C++ process-based plugin used by the Protobuf Compiler (protoc).
-The plugin architecture, which is well defined within protoc, allows it to load external process for additional language generation support.
+*protoc-gen-docbook* is a C++ process-based plugin used by the Protobuf Compiler (_protoc_).
+The plugin architecture, which is well defined within _protoc_, allows it to load external process for additional language generation support.
 
 Here is the developer oriented documentation in [https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb plugin.pb.h]
 {{{
 // A plugin executable needs only to be placed somewhere in the path.  The
 // plugin should be named "protoc-gen-$NAME", and will then be used when the
-// flag "--${NAME}_out" is passed to protoc.
+// flag "--${NAME}_out" is passed to _protoc_.
 }}}
 
-Therefore, protoc-gen-docbook relies on entirely on protoc to parse the input .proto source file. The parse results are then encoded in protobuf and be passed into protoc-gen-docbook through _stdin_. This information is called the *descriptor*. protoc-gen-docbook handles the descriptor information, and generates DocBook output.
+Therefore, _protoc-gen-docbook_ relies on entirely on _protoc_ to parse the input .proto source file. The parse results are then encoded in protobuf and be passed into _protoc_-gen-docbook through _stdin_. This information is called the *descriptor*. _protoc_-gen-docbook handles the descriptor information, and generates DocBook output.
 
-If protoc-gen-docbook is in the same path as protoc, it will be loaded automatically through the following command.
+If _protoc_-gen-docbook is in the same path as _protoc_, it will be loaded automatically through the following command.
 
 {{{
 protoc --docbook_out=. --proto_path=$your_proto_path $your_proto_file
 }}}
+
+===Protoc 2.5.0===
+
+One small but important detail is the Protobuf Compiler version. _protoc-gen-docbook_ can only work with _protoc_ 2.5.0 and above. The reason is because .proto comments are only collected since 2.5.0+. Prior to 2.5.0, all comments are discarded.
 
 ----
 
