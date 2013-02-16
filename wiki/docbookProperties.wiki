@@ -1,3 +1,4 @@
+#summary A complete docbook.properties file that controls the DocBook output.
 {{{
 # docbook.properties 
 #
