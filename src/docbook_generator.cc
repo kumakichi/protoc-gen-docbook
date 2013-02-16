@@ -405,8 +405,11 @@ namespace {
 				cleanedComment.append("&gt;");
 				break;
 			default:
-				if(c <= 0 || c > 0x7F)
+				// Space out all null character because stream can't handle it.
+				if(c == 0) 
+				{
 					c = ' ';
+				}
 				cleanedComment.append(1, c); 
 				break;
 			}
