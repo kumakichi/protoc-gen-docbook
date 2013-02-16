@@ -1,7 +1,9 @@
 #summary A complete docbook.properties file that controls the DocBook output.
 =docbook.properties=
 
-_protoc-gen-docbook_ reads in an options file called *docbook.properties* for configurations such as look-and-feel, styling, as well as more advanced option such as [CustomTemplateGuide custom template]. This file should be located within your deploy folder.
+_protoc-gen-docbook_ reads in an options file called *docbook.properties* for configurations such as look-and-feel, styling, as well as more advanced option such as [CustomTemplateGuide custom template]. The format of the file is similar to [http://en.wikipedia.org/wiki/.properties .properties file].
+
+This file should be located within your deploy folder.
 
 =Definition=
 {{{
