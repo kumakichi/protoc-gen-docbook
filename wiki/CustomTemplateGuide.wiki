@@ -14,9 +14,9 @@ An insertion point looks like this:
 }}}
 where $your_file_name is the .proto file name including the file extension. 
 
-It is expected to for one insertion point for every .proto that is fed into _protoc_gen_docbook. Othewise, an error will occur.
+It is expected to for one insertion point for every .proto that is fed into _protoc-gen-docbook. Othewise, an error will occur.
 
-= Sample DocBook=
+= Sample Insertion Point=
 Here is a sample DocBook file that use insertion points.
 
 {{{
@@ -61,7 +61,9 @@ Here is a sample DocBook file that use insertion points.
 
 See [http://code.google.com/p/protoc-gen-docbook/wiki/Samples#Sample_4 sample page] for source and output.
 
-= Commands=
+= Commands and Options =
+
+To specify your custom template file, you will need to set the *custom_template_file* variable in *docbook.properties* file. 
 
 {{{
 #############################################################################
@@ -76,4 +78,20 @@ See [http://code.google.com/p/protoc-gen-docbook/wiki/Samples#Sample_4 sample pa
 #
 #############################################################################
 custom_template_file = custom_template.xml
+}}}
+
+If you are using *run.bat* to perform your conversion, you will also need to modify the *docbook_input* variable in the batch file. 
+
+{{{
+set fop_path=..\fop-1.1
+set docbook_input=.\custom_template-out.xml
+set pdf_output=.\custom_template-out.pdf
+
+cmd /c %fop_path%\fop.bat ^
+-xml %docbook_input% ^
+-xsl %fop_path%\docbook-xsl-1.78.0\fo\docbook.xsl ^
+-pdf %pdf_output% ^
+-param page.orientation landscape ^
+-param paper.type USletter
+
 }}}
