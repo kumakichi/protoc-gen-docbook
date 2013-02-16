@@ -80,7 +80,7 @@ To specify your custom template file, you will need to set the *custom_template_
 custom_template_file = custom_template.xml
 }}}
 
-If you are using *run.bat* to perform your conversion, you will also need to modify the *docbook_input* variable in the batch file. 
+If you are using *run.bat* to perform your conversion, you will also need to modify the *docbook_input* variable in the batch file. The docbook input file name should be *{$your_template_file}-out*.
 
 {{{
 set fop_path=..\fop-1.1
