@@ -146,6 +146,18 @@ namespace {
 	char const *OPTION_NAME_STARTING_SECTION_LEVEL = "starting_section_level";
 
 	//! @details
+	//! Add a timestamp at the bottom of the document to indicate when it was
+	//! generated.
+	//!
+	//! This option is only available if custom template is NOT used.
+	//!
+	//! 1 to include
+	//! 0 to exclude
+	//!
+	//! [default = 0]
+	char const *OPTION_NAME_INCLUDE_TIMESTAMP = "include_timestamp";
+
+	//! @details
 	//! Custom template file allows user to provide their own template file
 	//! and use "insertion point" to pinpoint where the tables should be
 	//! located. If not provided, a default template is provided.
@@ -228,6 +240,11 @@ namespace {
 	//! To include or exclude the scalar value table.
 	//! See OPTION_NAME_INCLUDE_SCALAR_VALUE_TABLE
 	bool s_includeScalarValueTable = true;
+
+	//! @details
+	//! To include or exclude the timestamp in the generated document.
+	//! See OPTION_NAME_INCLUDE_TIMESTAMP
+	bool s_includeTimestamp = false;
 
 	//! @details
 	//! This field marks the first time DocBookGenerator::Generate method is
@@ -671,6 +688,14 @@ namespace {
 	//! The accumulated stream.
 	void WriteDocbookFooter(std::ostringstream &os)
 	{
+		if(s_includeTimestamp)
+		{
+			// Use "Complete ISO date and time, including offset from UTC."
+			// See http://www.sagehill.net/docbookxsl/Datetime.html for 
+			// formatting options.
+			os << "<para>This document was generated <?dbtimestamp \
+				  format=\"c\"?>.</para>" << std::endl;
+		}
 		os << "</article>" << std::endl;		
 	}
 
@@ -1478,6 +1503,19 @@ DocbookGenerator::DocbookGenerator()
 			s_startingSectionLevel > MAX_ALLOWED_SECTION_LEVEL_OPTION)
 		{
 			s_startingSectionLevel = 1;
+		}
+	}
+
+	itr = s_docbookOptions.find(OPTION_NAME_INCLUDE_TIMESTAMP);
+	if(itr != s_docbookOptions.end())
+	{
+		if(itr->second == "0")
+		{
+			s_includeTimestamp = false;
+		}
+		else
+		{
+			s_includeTimestamp = true;
 		}
 	}
 }
