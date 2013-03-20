@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 	if(argc == 2)
 	{
 		std::string arg = argv[1];
-		if(arg == "--v")
+		if(arg == "--version")
 		{
 			std::cout << "version = " << DBK_GENERATOR_VERSION << std::endl;
 			return 0;
