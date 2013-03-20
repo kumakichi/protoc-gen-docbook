@@ -32,33 +32,41 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 //
-// A proto file which is imported by unittest.proto to test importing.
+// This file contains messages for testing message_set_wire_format.
 
-
-// We don't put this in a package within proto2 because we need to make sure
-// that the generated code doesn't depend on being in the proto2 namespace.
-// In test_util.h we do
-// "using namespace unittest_import = protobuf_unittest_import".
-package protobuf_unittest_import;
+package protobuf_unittest;
 
 option optimize_for = SPEED;
 
-// Excercise the java_package option.
-option java_package = "com.google.protobuf.test";
-
-// Do not set a java_outer_classname here to verify that Proto2 works without
-// one.
-
-// Test public import
-import public "unittest_import_public.proto";
-
-message ImportMessage {
-  optional int32 d = 1;
+// A message with message_set_wire_format.
+message TestMessageSet {
+  option message_set_wire_format = true;
+  extensions 4 to max;
 }
 
-enum ImportEnum {
-  IMPORT_FOO = 7;
-  IMPORT_BAR = 8;
-  IMPORT_BAZ = 9;
+message TestMessageSetContainer {
+  optional TestMessageSet message_set = 1;
+}
+
+message TestMessageSetExtension1 {
+  extend TestMessageSet {
+    optional TestMessageSetExtension1 message_set_extension = 1545008;
+  }
+  optional int32 i = 15;
+}
+
+message TestMessageSetExtension2 {
+  extend TestMessageSet {
+    optional TestMessageSetExtension2 message_set_extension = 1547769;
+  }
+  optional string str = 25;
+}
+
+// MessageSet wire format is equivalent to this.
+message RawMessageSet {
+  repeated group Item = 1 {
+    required int32 type_id = 2;
+    required bytes message = 3;
+  }
 }
 

@@ -20,16 +20,7 @@ cmd /c ..\protoc.exe ^
 %proto_files% ^
 --docbook_out=.
 
-set fop_path=..\fop-1.1
-set docbook_input=.\docbook_out.xml
-set pdf_output=.\docbook_out.pdf
-
-cmd /c %fop_path%\fop.bat ^
--xml %docbook_input% ^
--xsl %fop_path%\docbook-xsl-1.78.0\fo\docbook.xsl ^
--pdf %pdf_output% ^
--param page.orientation landscape ^
--param paper.type USletter
+cmd /c ..\transform.bat ..\fop-1.1 .\docbook_out.xml .\docbook_out.pdf
 
 :concat_files
 set proto_files=%proto_files% %1
