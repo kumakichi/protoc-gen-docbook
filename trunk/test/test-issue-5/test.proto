@@ -1,0 +1,15 @@
+message OuterMessage
+{
+    message InnerMessage
+    {
+        enum InnerEnum
+        {
+            INNER_ENUM_A          = 0;
+            INNER_ENUM_B          = 1;
+        }
+
+        required InnerEnum innerEnumeration = 1;
+    }
+
+    repeated InnerMessage innerMessage = 1;
+}
