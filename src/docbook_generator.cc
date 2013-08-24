@@ -881,6 +881,22 @@ namespace {
 			<< "<tbody>"<< std::endl;
 	}
 
+	void WriteInformalTableFooter(std::ostringstream &os)
+	{
+		os 
+			<< "</tbody>"<< std::endl
+			<< "</tgroup>"<< std::endl
+			<< "</informaltable>"<< std::endl;
+	}
+
+	//! @details
+	//! Writes out the close section tag.
+	//! 
+	void WriteCloseSection(std::ostringstream &os, int sectionLevel)
+	{
+		os << "</sect"<< SectionLevel(sectionLevel) << ">" <<std::endl;
+	}
+
 	void WriteInformalTableFooter(std::ostringstream &os, int sectionLevel)
 	{
 		os 
@@ -1112,7 +1128,11 @@ namespace {
 	//! @param[in] int sectionLevel
 	//! Section level is used to describe which <secX> tag to use.
 	//!
-	void WriteMessageTable(std::ostringstream &os, 
+	//! @return
+	//! true if a message is written, false otherwise. This is useful to
+	//! determine if a </sectX> tag is needed.
+	//!
+	bool WriteMessageTable(std::ostringstream &os, 
 		Descriptor const *messageDescriptor, 
 		string const &descriptorName,
 		int sectionLevel)
@@ -1133,8 +1153,12 @@ namespace {
 
 			WriteMessageFieldEntries(os, messageDescriptor);
 
-			WriteInformalTableFooter(os, SectionLevel(sectionLevel));
+			WriteInformalTableFooter(os);
+
+			return true;
 		}
+
+		return false;
 	}
 
 	//! @details
@@ -1175,23 +1199,20 @@ namespace {
 
 		// Print this message with all of its field. This should generate a
 		// InformalTable type in DocBook for this message.
-		WriteMessageTable(os, messageDescriptor, descriptorName, depth+2);
+		bool messageWritten = 
+			WriteMessageTable(os, messageDescriptor, descriptorName, depth);
 
 		// Print the enums nested with this message. Since enum is defined 
 		// within the message, its section level should be one below the 
 		// parent message, hence +3.
-		WriteEnumTable(messageDescriptor, os, descriptorName, depth+3);
+		WriteEnumTable(messageDescriptor, os, descriptorName, depth+1);
 
 		// Base case for the recursive call. If there is no nested type, 
 		// then the formatting for this message is done.
-		if(messageDescriptor->nested_type_count() == 0)
-		{
-			return;
-		}
 		// Otherwise, for each nested type, recursively print its own table.
 		// Because of the recursive layout, the deepest layered message will
 		// be printed last within its root message.
-		else
+		if(messageDescriptor->nested_type_count() > 0)
 		{
 			for(int i=0; i<messageDescriptor->nested_type_count(); ++i)
 			{
@@ -1201,6 +1222,13 @@ namespace {
 					descriptorName, 
 					depth+1);
 			}
+		}
+
+		// If a message was written, close the corresponding section. This 
+		// preserves the section hierarchy. See Issue #5.
+		if(messageWritten)
+		{
+			WriteCloseSection(os, depth);
 		}
 	}
 
@@ -1554,7 +1582,7 @@ bool DocbookGenerator::Generate(
 	// information out recursively.
 	for (int i = 0; i < file->message_type_count(); i++) 
 	{
-		WriteMessage(os, file->message_type(i), "", s_startingSectionLevel);
+		WriteMessage(os, file->message_type(i), "", s_startingSectionLevel+1);
 	}
 
 	// Write out the Enums defined within the scope of the file. These
