@@ -158,6 +158,17 @@ namespace {
 	char const *OPTION_NAME_INCLUDE_TIMESTAMP = "include_timestamp";
 
 	//! @details
+	//! Preserve line breaks within the comment in .proto into the generated DocBook.
+	//! This implies all \r\n or \n will be converted into <sbr/>
+	//!
+	//! 1 to preserve
+	//! 0 to ignore (All line breaks in comment converts into space.)
+	//!
+	//! [default = 0]
+	//! See Issue #3
+	char const *OPTION_NAME_PRESERVE_COMMENT_LINE_BREAKS = "preserve_comment_line_breaks";
+
+	//! @details
 	//! Custom template file allows user to provide their own template file
 	//! and use "insertion point" to pinpoint where the tables should be
 	//! located. If not provided, a default template is provided.
@@ -245,6 +256,11 @@ namespace {
 	//! To include or exclude the timestamp in the generated document.
 	//! See OPTION_NAME_INCLUDE_TIMESTAMP
 	bool s_includeTimestamp = false;
+
+	//! @details
+	//! To preserve line breaks from comment field in the generated document.
+	//! See OPTION_NAME_PRESERVE_COMMENT_LINE_BREAKS
+	bool s_preserve_comment_line_breaks = false;
 
 	//! @details
 	//! This field marks the first time DocBookGenerator::Generate method is
@@ -420,6 +436,15 @@ namespace {
 				break;
 			case '>':  
 				cleanedComment.append("&gt;");
+				break;
+			case '\n':
+				if(s_preserve_comment_line_breaks) 
+				{
+					cleanedComment.append("<sbr/>");
+				}				
+				break;
+			case '\r':
+				cleanedComment.append(" ");				
 				break;
 			default:
 				// Space out all null character because stream can't handle it.
@@ -1544,6 +1569,19 @@ DocbookGenerator::DocbookGenerator()
 		else
 		{
 			s_includeTimestamp = true;
+		}
+	}
+
+	itr = s_docbookOptions.find(OPTION_NAME_PRESERVE_COMMENT_LINE_BREAKS);
+	if(itr != s_docbookOptions.end())
+	{
+		if(itr->second == "0")
+		{
+			s_preserve_comment_line_breaks = false;
+		}
+		else
+		{
+			s_preserve_comment_line_breaks = true;
 		}
 	}
 }
