@@ -1,3 +1,6 @@
+2013-08-23: Version 0.3.1
+- Resolved Issue 3, Issue 4, and Issue 5.
+
 2013-03-19: Version 0.3.0
 - Sync up with protobuf 2.5.0 and ported over the latest protobuf unit 
 test suite.
